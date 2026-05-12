@@ -179,7 +179,7 @@ h2 {
 
 .calculator-row {
   display: grid;
-  grid-template-columns: 1fr 132px;
+  grid-template-columns: 1fr 140px;
 
   align-items: center;
   gap: 12px;
@@ -235,7 +235,7 @@ h2 {
 }
 
 .input-row span {
-  min-width: 16px;
+  min-width: 42px;
 
   text-align: right;
 
@@ -418,7 +418,6 @@ input[type="number"] {
   color: #1c1712;
 }
 
-
 /* =========================
    UTILITIES
 ========================= */
@@ -442,7 +441,7 @@ input[type="number"] {
   }
 
   .calculator-row {
-    grid-template-columns: 1fr 118px;
+    grid-template-columns: 1fr 130px;
 
     gap: 10px;
   }
