@@ -206,9 +206,18 @@
     <script src="script.js"></script>
 
     <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("service-worker.js");
-      }
-    </script>
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/BakersMateApp/service-worker.js", {
+        scope: "/BakersMateApp/",
+
+      });
+
+    });
+
+  }
+
+</script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = "bakers-mate-v3";
+const CACHE_NAME = "bakers-mate-v5";
 
 const FILES_TO_CACHE = [
   "./",
