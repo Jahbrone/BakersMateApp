@@ -11,7 +11,6 @@ const inputs = {
   sugar: document.getElementById("sugar"),
 };
 
-
 /* =========================
    TOGGLE ELEMENTS
 ========================= */
@@ -22,7 +21,6 @@ const toggles = {
   sugar: document.getElementById("sugarToggle"),
 };
 
-
 /* =========================
    OPTIONAL FIELD ELEMENTS
 ========================= */
@@ -32,7 +30,6 @@ const fields = {
   oil: document.getElementById("oilField"),
   sugar: document.getElementById("sugarField"),
 };
-
 
 /* =========================
    OUTPUT ELEMENTS
@@ -47,7 +44,6 @@ const outputs = {
   totalDough: document.getElementById("totalDough"),
 };
 
-
 /* =========================
    RESULT ROW ELEMENTS
 ========================= */
@@ -58,13 +54,11 @@ const resultRows = {
   sugar: document.getElementById("sugarResult"),
 };
 
-
 /* =========================
    RESET BUTTON
 ========================= */
 
 const resetButton = document.getElementById("resetButton");
-
 
 /* =========================
    HELPER FUNCTIONS
@@ -81,7 +75,6 @@ function formatGrams(value) {
 function isEnabled(ingredient) {
   return toggles[ingredient].checked;
 }
-
 
 /* =========================
    MAIN CALCULATION
@@ -112,7 +105,6 @@ function calculateDough() {
   outputs.totalDough.textContent = formatGrams(total);
 }
 
-
 /* =========================
    TOGGLE UI
 ========================= */
@@ -128,7 +120,6 @@ function updateToggleUI() {
   calculateDough();
 }
 
-
 /* =========================
    RESET FUNCTION
 ========================= */
@@ -137,17 +128,12 @@ function resetCalculator() {
   inputs.flour.value = 1000;
   inputs.hydration.value = 70;
   inputs.salt.value = 2;
-  inputs.yeast.value = 0.3;
+  inputs.yeast.value = 0;
   inputs.oil.value = 0;
   inputs.sugar.value = 0;
 
-  toggles.yeast.checked = true;
-  toggles.oil.checked = false;
-  toggles.sugar.checked = false;
-
-  updateToggleUI();
+  calculateDough();
 }
-
 
 /* =========================
    LIVE INPUT LISTENERS
@@ -156,13 +142,10 @@ function resetCalculator() {
 Object.values(inputs).forEach((input) => {
   input.addEventListener("input", calculateDough);
 
-input.addEventListener("click", () => {
-
-  input.select();
-
+  input.addEventListener("click", () => {
+    input.select();
+  });
 });
-});
-
 
 /* =========================
    TOGGLE LISTENERS
@@ -172,13 +155,11 @@ Object.values(toggles).forEach((toggle) => {
   toggle.addEventListener("change", updateToggleUI);
 });
 
-
 /* =========================
    RESET BUTTON LISTENER
 ========================= */
 
 resetButton.addEventListener("click", resetCalculator);
-
 
 /* =========================
    INITIAL LOAD
