@@ -17,127 +17,155 @@
       <h1>Bakers Mate</h1>
     </header>
 
-    <!-- INPUT CARD -->
-    <section class="card input-card">
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+      <button id="calculatorTab" class="nav-button active">Calculator</button>
+      <button id="presetsTab" class="nav-button">Presets</button>
+    </nav>
 
-      <!-- TOGGLES -->
-      <div class="toggle-row">
-        <div class="toggle-group">
+    <!-- CALCULATOR VIEW -->
+    <section id="calculatorView">
 
-          <label class="toggle-option">
-            <input id="yeastToggle" type="checkbox" checked />
-            <span id="yeastToggleLabel">Yeast</span>
-          </label>
+      <!-- INPUT CARD -->
+      <section class="card input-card">
 
-          <label class="toggle-option">
-            <input id="oilToggle" type="checkbox" />
-            <span id="oilToggleLabel">Oil</span>
-          </label>
+        <!-- TOGGLES -->
+        <div class="toggle-row">
+          <div class="toggle-group">
 
-          <label class="toggle-option">
-            <input id="sugarToggle" type="checkbox" />
-            <span id="sugarToggleLabel">Sugar</span>
-          </label>
+            <label class="toggle-option">
+              <input id="yeastToggle" type="checkbox" checked />
+              <span>Yeast</span>
+            </label>
 
+            <label class="toggle-option">
+              <input id="oilToggle" type="checkbox" />
+              <span>Oil</span>
+            </label>
+
+            <label class="toggle-option">
+              <input id="sugarToggle" type="checkbox" />
+              <span>Sugar</span>
+            </label>
+
+          </div>
         </div>
-      </div>
 
-      <!-- FLOUR -->
-      <div class="calculator-row">
-        <label for="flour">Flour weight</label>
-        <div class="input-row">
-          <input id="flour" type="number" inputmode="decimal" value="1000" min="0" />
-          <span>g</span>
+        <!-- FLOUR -->
+        <div class="calculator-row">
+          <label for="flour">Flour weight</label>
+          <div class="input-row">
+            <input id="flour" type="number" inputmode="decimal" value="1000" min="0" />
+            <span>g</span>
+          </div>
         </div>
-      </div>
 
-      <!-- HYDRATION -->
-      <div class="calculator-row">
-        <label for="hydration">Hydration</label>
-        <div class="input-row">
-          <input id="hydration" type="number" inputmode="decimal" value="70" min="0" />
-          <span>%</span>
+        <!-- HYDRATION -->
+        <div class="calculator-row">
+          <label for="hydration">Hydration</label>
+          <div class="input-row">
+            <input id="hydration" type="number" inputmode="decimal" value="70" min="0" />
+            <span>%</span>
+          </div>
         </div>
-      </div>
 
-      <!-- SALT -->
-      <div class="calculator-row">
-        <label for="salt">Salt</label>
-        <div class="input-row">
-          <input id="salt" type="number" inputmode="decimal" value="2" min="0" />
-          <span>%</span>
+        <!-- SALT -->
+        <div class="calculator-row">
+          <label for="salt">Salt</label>
+          <div class="input-row">
+            <input id="salt" type="number" inputmode="decimal" value="2" min="0" />
+            <span>%</span>
+          </div>
         </div>
-      </div>
 
-      <!-- YEAST -->
-      <div id="yeastField" class="calculator-row optional-field">
-        <label for="yeast">Yeast</label>
-        <div class="input-row">
-          <input id="yeast" type="number" inputmode="decimal" value="0.3" min="0" step="0.1" />
-          <span>%</span>
+        <!-- YEAST -->
+        <div id="yeastField" class="calculator-row optional-field">
+          <label for="yeast">Yeast</label>
+          <div class="input-row">
+            <input id="yeast" type="number" inputmode="decimal" value="0.3" min="0" step="0.1" />
+            <span>%</span>
+          </div>
         </div>
-      </div>
 
-      <!-- OIL -->
-      <div id="oilField" class="calculator-row optional-field hidden">
-        <label for="oil">Oil</label>
-        <div class="input-row">
-          <input id="oil" type="number" inputmode="decimal" value="0" min="0" />
-          <span>%</span>
+        <!-- OIL -->
+        <div id="oilField" class="calculator-row optional-field hidden">
+          <label for="oil">Oil</label>
+          <div class="input-row">
+            <input id="oil" type="number" inputmode="decimal" value="0" min="0" />
+            <span>%</span>
+          </div>
         </div>
-      </div>
 
-      <!-- SUGAR -->
-      <div id="sugarField" class="calculator-row optional-field hidden">
-        <label for="sugar">Sugar</label>
-        <div class="input-row">
-          <input id="sugar" type="number" inputmode="decimal" value="0" min="0" />
-          <span>%</span>
+        <!-- SUGAR -->
+        <div id="sugarField" class="calculator-row optional-field hidden">
+          <label for="sugar">Sugar</label>
+          <div class="input-row">
+            <input id="sugar" type="number" inputmode="decimal" value="0" min="0" />
+            <span>%</span>
+          </div>
         </div>
-      </div>
+
+      </section>
+
+      <!-- RESULTS CARD -->
+      <section class="card results-card" aria-live="polite">
+        <h2>Results</h2>
+
+        <div class="result-row">
+          <span>Water</span>
+          <strong id="waterAmount">700g</strong>
+        </div>
+
+        <div class="result-row">
+          <span>Salt</span>
+          <strong id="saltAmount">20g</strong>
+        </div>
+
+        <div id="yeastResult" class="result-row">
+          <span>Yeast</span>
+          <strong id="yeastAmount">3g</strong>
+        </div>
+
+        <div id="oilResult" class="result-row hidden">
+          <span>Oil</span>
+          <strong id="oilAmount">0g</strong>
+        </div>
+
+        <div id="sugarResult" class="result-row hidden">
+          <span>Sugar</span>
+          <strong id="sugarAmount">0g</strong>
+        </div>
+
+        <div class="total-row">
+          <span>Total dough</span>
+          <strong id="totalDough">1723g</strong>
+        </div>
+      </section>
+
+      <!-- RESET BUTTON -->
+      <button id="resetButton" class="reset-button">Reset</button>
 
     </section>
 
-    <!-- RESULTS CARD -->
-    <section class="card results-card" aria-live="polite">
-      <h2>Results</h2>
+    <!-- PRESETS VIEW -->
+    <section id="presetsView" class="hidden">
+      <section class="card">
+        <h2>Presets</h2>
 
-      <div class="result-row">
-        <span>Water</span>
-        <strong id="waterAmount">700g</strong>
-      </div>
-
-      <div class="result-row">
-        <span>Salt</span>
-        <strong id="saltAmount">20g</strong>
-      </div>
-
-      <div id="yeastResult" class="result-row">
-        <span>Yeast</span>
-        <strong id="yeastAmount">3g</strong>
-      </div>
-
-      <div id="oilResult" class="result-row hidden">
-        <span>Oil</span>
-        <strong id="oilAmount">0g</strong>
-      </div>
-
-      <div id="sugarResult" class="result-row hidden">
-        <span>Sugar</span>
-        <strong id="sugarAmount">0g</strong>
-      </div>
-
-      <div class="total-row">
-        <span>Total dough</span>
-        <strong id="totalDough">1723g</strong>
-      </div>
+        <div class="preset-list">
+          <button class="preset-card">Pizza Balls</button>
+          <button class="preset-card">Bagels</button>
+          <button class="preset-card">Focaccia</button>
+        </div>
+      </section>
     </section>
 
-    <!-- RESET BUTTON -->
-    <button id="resetButton" class="reset-button">Reset</button>
+    <!-- PRESET DETAIL VIEW -->
+    <section id="presetDetailView" class="hidden"></section>
 
   </main>
 
+  <script src="presets.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

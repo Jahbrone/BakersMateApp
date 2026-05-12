@@ -55,6 +55,17 @@ const resultRows = {
 };
 
 /* =========================
+   VIEW ELEMENTS
+========================= */
+
+const calculatorView = document.getElementById("calculatorView");
+const presetsView = document.getElementById("presetsView");
+const presetDetailView = document.getElementById("presetDetailView");
+
+const calculatorTab = document.getElementById("calculatorTab");
+const presetsTab = document.getElementById("presetsTab");
+
+/* =========================
    RESET BUTTON
 ========================= */
 
@@ -128,11 +139,34 @@ function resetCalculator() {
   inputs.flour.value = 1000;
   inputs.hydration.value = 70;
   inputs.salt.value = 2;
-  inputs.yeast.value = 0;
+  inputs.yeast.value = 0.3;
   inputs.oil.value = 0;
   inputs.sugar.value = 0;
 
   calculateDough();
+}
+
+/* =========================
+   VIEW SWITCHING
+========================= */
+
+function showView(viewName) {
+  calculatorView.classList.add("hidden");
+  presetsView.classList.add("hidden");
+  presetDetailView.classList.add("hidden");
+
+  calculatorTab.classList.remove("active");
+  presetsTab.classList.remove("active");
+
+  if (viewName === "calculator") {
+    calculatorView.classList.remove("hidden");
+    calculatorTab.classList.add("active");
+  }
+
+  if (viewName === "presets") {
+    presetsView.classList.remove("hidden");
+    presetsTab.classList.add("active");
+  }
 }
 
 /* =========================
@@ -156,6 +190,18 @@ Object.values(toggles).forEach((toggle) => {
 });
 
 /* =========================
+   NAV LISTENERS
+========================= */
+
+calculatorTab.addEventListener("click", () => {
+  showView("calculator");
+});
+
+presetsTab.addEventListener("click", () => {
+  showView("presets");
+});
+
+/* =========================
    RESET BUTTON LISTENER
 ========================= */
 
@@ -166,3 +212,4 @@ resetButton.addEventListener("click", resetCalculator);
 ========================= */
 
 updateToggleUI();
+showView("calculator");
