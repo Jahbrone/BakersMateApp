@@ -13,6 +13,28 @@ const inputs = {
 
 
 /* =========================
+   TOGGLE ELEMENTS
+========================= */
+
+const toggles = {
+  yeast: document.getElementById("yeastToggle"),
+  oil: document.getElementById("oilToggle"),
+  sugar: document.getElementById("sugarToggle"),
+};
+
+
+/* =========================
+   OPTIONAL FIELD ELEMENTS
+========================= */
+
+const fields = {
+  yeast: document.getElementById("yeastField"),
+  oil: document.getElementById("oilField"),
+  sugar: document.getElementById("sugarField"),
+};
+
+
+/* =========================
    OUTPUT ELEMENTS
 ========================= */
 
@@ -23,6 +45,17 @@ const outputs = {
   oilAmount: document.getElementById("oilAmount"),
   sugarAmount: document.getElementById("sugarAmount"),
   totalDough: document.getElementById("totalDough"),
+};
+
+
+/* =========================
+   RESULT ROW ELEMENTS
+========================= */
+
+const resultRows = {
+  yeast: document.getElementById("yeastResult"),
+  oil: document.getElementById("oilResult"),
+  sugar: document.getElementById("sugarResult"),
 };
 
 
@@ -45,47 +78,32 @@ function formatGrams(value) {
   return `${Math.round(value * 10) / 10}g`;
 }
 
-/* =========================
+function isEnabled(ingredient) {
+  return toggles[ingredient].checked;
+}
 
-   AUTO-SELECT INPUT ON TAP
-
-========================= */
-
-Object.values(inputs).forEach((input) => {
-
-  input.addEventListener("focus", () => {
-
-    input.select();
-
-  });
-
-});
 
 /* =========================
    MAIN CALCULATION
 ========================= */
 
 function calculateDough() {
-
-  // INPUT VALUES
   const flour = getNumber(inputs.flour);
   const hydration = getNumber(inputs.hydration);
   const saltPercent = getNumber(inputs.salt);
-  const yeastPercent = getNumber(inputs.yeast);
-  const oilPercent = getNumber(inputs.oil);
-  const sugarPercent = getNumber(inputs.sugar);
 
-  // CALCULATIONS
+  const yeastPercent = isEnabled("yeast") ? getNumber(inputs.yeast) : 0;
+  const oilPercent = isEnabled("oil") ? getNumber(inputs.oil) : 0;
+  const sugarPercent = isEnabled("sugar") ? getNumber(inputs.sugar) : 0;
+
   const water = flour * (hydration / 100);
   const salt = flour * (saltPercent / 100);
   const yeast = flour * (yeastPercent / 100);
   const oil = flour * (oilPercent / 100);
   const sugar = flour * (sugarPercent / 100);
 
-  // TOTAL DOUGH
   const total = flour + water + salt + yeast + oil + sugar;
 
-  // UPDATE UI
   outputs.waterAmount.textContent = formatGrams(water);
   outputs.saltAmount.textContent = formatGrams(salt);
   outputs.yeastAmount.textContent = formatGrams(yeast);
@@ -96,11 +114,26 @@ function calculateDough() {
 
 
 /* =========================
+   TOGGLE UI
+========================= */
+
+function updateToggleUI() {
+  Object.keys(toggles).forEach((ingredient) => {
+    const enabled = isEnabled(ingredient);
+
+    fields[ingredient].classList.toggle("hidden", !enabled);
+    resultRows[ingredient].classList.toggle("hidden", !enabled);
+  });
+
+  calculateDough();
+}
+
+
+/* =========================
    RESET FUNCTION
 ========================= */
 
 function resetCalculator() {
-
   inputs.flour.value = 1000;
   inputs.hydration.value = 70;
   inputs.salt.value = 2;
@@ -108,7 +141,11 @@ function resetCalculator() {
   inputs.oil.value = 0;
   inputs.sugar.value = 0;
 
-  calculateDough();
+  toggles.yeast.checked = true;
+  toggles.oil.checked = false;
+  toggles.sugar.checked = false;
+
+  updateToggleUI();
 }
 
 
@@ -118,6 +155,21 @@ function resetCalculator() {
 
 Object.values(inputs).forEach((input) => {
   input.addEventListener("input", calculateDough);
+
+input.addEventListener("click", () => {
+
+  input.select();
+
+});
+});
+
+
+/* =========================
+   TOGGLE LISTENERS
+========================= */
+
+Object.values(toggles).forEach((toggle) => {
+  toggle.addEventListener("change", updateToggleUI);
 });
 
 
@@ -132,4 +184,4 @@ resetButton.addEventListener("click", resetCalculator);
    INITIAL LOAD
 ========================= */
 
-calculateDough();
+updateToggleUI();
