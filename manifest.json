@@ -1,0 +1,21 @@
+{
+  "name": "Bakers Mate",
+  "short_name": "Bakers Mate",
+  "description": "A fast baker’s percentage and dough batch calculator.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#151311",
+  "theme_color": "#151311",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
