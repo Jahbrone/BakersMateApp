@@ -187,32 +187,18 @@ function showView(viewName) {
    PRESET CALCULATION
 ========================= */
 
-function calculatePresetBatch(preset, quantity, sizeKey) {
+function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
   let flour = 0;
 
   if (preset.type === "fixed-unit") {
     flour = quantity * preset.flourPerUnit;
   }
 
-  if (preset.type === "sized-unit") {
+  if (preset.type === "sized-unit" || preset.type === "sized-batch") {
     const size = preset.sizes[sizeKey];
-    const totalDough = quantity * size.doughWeight;
+    const flourPerItem = sizeKey === "custom" ? customFlour : size.flour;
 
-    const totalPercentage =
-      100 +
-      preset.hydration +
-      preset.salt +
-      preset.yeast +
-      preset.oil +
-      preset.sugar;
-
-    flour = totalDough / (totalPercentage / 100);
-  }
-
-  if (preset.type === "sized-batch") {
-    const size = preset.sizes[sizeKey];
-
-    flour = quantity * size.flour;
+    flour = quantity * flourPerItem;
   }
 
   const water = flour * (preset.hydration / 100);
@@ -267,6 +253,20 @@ function renderPresetDetail(presetKey) {
                   `
                 )
                 .join("")}
+            </div>
+
+            <div id="customSizeRow" class="calculator-row custom-size-row hidden">
+              <label for="customFlour">${preset.customLabel}</label>
+              <div class="input-row">
+                <input
+                  id="customFlour"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  value="${preset.sizes.custom.flour}"
+                />
+                <span>g</span>
+              </div>
             </div>
           `
           : ""
@@ -333,23 +333,65 @@ function renderPresetDetail(presetKey) {
 }
 
 /* =========================
+   TOGGLE PRESET ROW
+========================= */
+
+function togglePresetRow(id, value) {
+  const amount = document.getElementById(id);
+  const row = amount.closest(".result-row");
+
+  row.classList.toggle("hidden", value <= 0);
+}
+
+/* =========================
    UPDATE PRESET RESULTS
 ========================= */
 
 function updatePresetDetailResults() {
   const preset = presetLibrary[activePresetKey];
+
   const quantityInput = document.getElementById("presetQuantity");
+  const customFlourInput = document.getElementById("customFlour");
+  const customSizeRow = document.getElementById("customSizeRow");
+
   const quantity = Number(quantityInput.value) || 0;
+  const customFlour = customFlourInput ? Number(customFlourInput.value) || 0 : 0;
 
-  const result = calculatePresetBatch(preset, quantity, activeSizeKey);
+  if (customSizeRow) {
+    customSizeRow.classList.toggle("hidden", activeSizeKey !== "custom");
+  }
 
-  document.getElementById("presetFlourAmount").textContent = formatGrams(result.flour);
-  document.getElementById("presetWaterAmount").textContent = formatGrams(result.water);
-  document.getElementById("presetSaltAmount").textContent = formatGrams(result.salt);
-  document.getElementById("presetYeastAmount").textContent = formatGrams(result.yeast);
-  document.getElementById("presetOilAmount").textContent = formatGrams(result.oil);
-  document.getElementById("presetSugarAmount").textContent = formatGrams(result.sugar);
-  document.getElementById("presetTotalAmount").textContent = formatGrams(result.total);
+  const result = calculatePresetBatch(
+    preset,
+    quantity,
+    activeSizeKey,
+    customFlour
+  );
+
+  document.getElementById("presetFlourAmount").textContent =
+    formatGrams(result.flour);
+
+  document.getElementById("presetWaterAmount").textContent =
+    formatGrams(result.water);
+
+  document.getElementById("presetSaltAmount").textContent =
+    formatGrams(result.salt);
+
+  document.getElementById("presetYeastAmount").textContent =
+    formatGrams(result.yeast);
+
+  document.getElementById("presetOilAmount").textContent =
+    formatGrams(result.oil);
+
+  document.getElementById("presetSugarAmount").textContent =
+    formatGrams(result.sugar);
+
+  document.getElementById("presetTotalAmount").textContent =
+    formatGrams(result.total);
+
+  togglePresetRow("presetYeastAmount", result.yeast);
+  togglePresetRow("presetOilAmount", result.oil);
+  togglePresetRow("presetSugarAmount", result.sugar);
 }
 
 /* =========================
@@ -359,6 +401,7 @@ function updatePresetDetailResults() {
 function attachPresetDetailListeners() {
   const backButton = document.getElementById("backToPresetsButton");
   const quantityInput = document.getElementById("presetQuantity");
+  const customFlourInput = document.getElementById("customFlour");
   const sizeButtons = document.querySelectorAll(".size-button");
 
   backButton.addEventListener("click", () => {
@@ -370,6 +413,14 @@ function attachPresetDetailListeners() {
   quantityInput.addEventListener("click", () => {
     quantityInput.select();
   });
+
+  if (customFlourInput) {
+    customFlourInput.addEventListener("input", updatePresetDetailResults);
+
+    customFlourInput.addEventListener("click", () => {
+      customFlourInput.select();
+    });
+  }
 
   sizeButtons.forEach((button) => {
     button.addEventListener("click", () => {

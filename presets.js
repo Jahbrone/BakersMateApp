@@ -1,4 +1,24 @@
 const presetLibrary = {
+  pizzaBalls: {
+    name: "Pizza Balls",
+    type: "sized-unit",
+    unitLabel: "balls",
+    customLabel: "Flour per ball",
+    defaultQuantity: 2,
+    defaultSize: "medium",
+    sizes: {
+      small: { label: "Small", flour: 120 },
+      medium: { label: "Medium", flour: 150 },
+      large: { label: "Large", flour: 180 },
+      custom: { label: "Custom", flour: 150 },
+    },
+    hydration: 65,
+    salt: 2.5,
+    yeast: 0.2,
+    oil: 0,
+    sugar: 0,
+  },
+
   bagels: {
     name: "Bagels",
     type: "fixed-unit",
@@ -12,52 +32,18 @@ const presetLibrary = {
     sugar: 4,
   },
 
-  pizzaBalls: {
-    name: "Pizza Balls",
-    type: "sized-unit",
-    unitLabel: "balls",
-    defaultQuantity: 2,
-    defaultSize: "medium",
-    sizes: {
-      small: {
-        label: "Small",
-        doughWeight: 200,
-      },
-      medium: {
-        label: "Medium",
-        doughWeight: 250,
-      },
-      large: {
-        label: "Large",
-        doughWeight: 280,
-      },
-    },
-    hydration: 65,
-    salt: 2.5,
-    yeast: 0.2,
-    oil: 0,
-    sugar: 0,
-  },
-
   focaccia: {
     name: "Focaccia",
     type: "sized-batch",
     unitLabel: "trays",
+    customLabel: "Flour per tray",
     defaultQuantity: 1,
     defaultSize: "medium",
     sizes: {
-      small: {
-        label: "Small",
-        flour: 300,
-      },
-      medium: {
-        label: "Medium",
-        flour: 500,
-      },
-      large: {
-        label: "Large",
-        flour: 750,
-      },
+      small: { label: "Small", flour: 300 },
+      medium: { label: "Medium", flour: 500 },
+      large: { label: "Large", flour: 750 },
+      custom: { label: "Custom", flour: 500 },
     },
     hydration: 80,
     salt: 2.5,

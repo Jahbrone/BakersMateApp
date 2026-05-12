@@ -24,12 +24,9 @@ body {
 .app {
   width: 100%;
   max-width: 520px;
-
   min-height: 100svh;
-
   margin: 0 auto;
   padding: 18px 14px 20px;
-
   display: flex;
   flex-direction: column;
 }
@@ -40,7 +37,6 @@ body {
 
 #calculatorView {
   flex: 1;
-
   display: flex;
   flex-direction: column;
 }
@@ -64,7 +60,6 @@ body {
 
 h1 {
   margin: 0;
-
   font-size: clamp(2rem, 10vw, 2.7rem);
   line-height: 0.95;
   letter-spacing: -0.04em;
@@ -72,7 +67,6 @@ h1 {
 
 h2 {
   margin: 0 0 12px;
-
   font-size: 1.05rem;
 }
 
@@ -82,10 +76,8 @@ h2 {
 
 .card {
   background: #201c18;
-
   border: 1px solid #3a3028;
   border-radius: 20px;
-
   padding: 14px;
   margin-bottom: 12px;
 }
@@ -97,31 +89,24 @@ h2 {
 .top-nav {
   display: flex;
   gap: 8px;
-
   margin-bottom: 14px;
 }
 
 .nav-button {
   flex: 1;
-
   min-height: 42px;
-
   border: 1px solid #3a3028;
   border-radius: 14px;
-
   background: #201c18;
   color: #c9b9a3;
-
   font-size: 0.95rem;
   font-weight: 800;
-
   cursor: pointer;
 }
 
 .nav-button.active {
   background: #f6c177;
   border-color: #f6c177;
-
   color: #1c1712;
 }
 
@@ -140,7 +125,6 @@ h2 {
 
 .toggle-option {
   margin: 0;
-
   cursor: pointer;
 }
 
@@ -152,16 +136,12 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-
   width: 72px;
   min-height: 34px;
-
   border: 1px solid #3a3028;
   border-radius: 999px;
-
   background: #120f0d;
   color: #c9b9a3;
-
   font-size: 0.8rem;
   font-weight: 850;
 }
@@ -169,7 +149,6 @@ h2 {
 .toggle-option input:checked + span {
   background: #f6c177;
   border-color: #f6c177;
-
   color: #1c1712;
 }
 
@@ -180,16 +159,13 @@ h2 {
 .calculator-row {
   display: grid;
   grid-template-columns: 1fr 140px;
-
   align-items: center;
   gap: 12px;
-
   margin-bottom: 10px;
 }
 
 .calculator-row label {
   color: #d8c7b0;
-
   font-size: 0.95rem;
   font-weight: 800;
 }
@@ -202,14 +178,10 @@ h2 {
   display: flex;
   align-items: center;
   gap: 6px;
-
   min-height: 42px;
-
   background: #120f0d;
-
   border: 1px solid #3a3028;
   border-radius: 13px;
-
   padding: 5px 10px;
 }
 
@@ -220,27 +192,19 @@ h2 {
 .input-row input {
   width: 100%;
   min-width: 0;
-
   border: 0;
   outline: 0;
-
   background: transparent;
-
   color: #fff7ed;
-
   font-size: 1.25rem;
   font-weight: 850;
-
   text-align: right;
 }
 
 .input-row span {
   min-width: 42px;
-
   text-align: right;
-
   color: #c9b9a3;
-
   font-size: 0.95rem;
   font-weight: 850;
 }
@@ -268,16 +232,13 @@ input[type="number"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 7px 0;
-
   border-bottom: 1px solid #342b24;
 }
 
 .result-row span,
 .total-row span {
   color: #d8c7b0;
-
   font-weight: 700;
 }
 
@@ -293,13 +254,11 @@ input[type="number"] {
 .total-row {
   margin-top: 6px;
   padding-top: 14px;
-
   border-bottom: 0;
 }
 
 .total-row strong {
   font-size: 1.75rem;
-
   color: #f6c177;
 }
 
@@ -310,18 +269,13 @@ input[type="number"] {
 .reset-button {
   width: 100%;
   min-height: 48px;
-
   border: 0;
   border-radius: 15px;
-
   background: #f6c177;
   color: #1c1712;
-
   font-size: 1rem;
   font-weight: 900;
-
   cursor: pointer;
-
   touch-action: manipulation;
 }
 
@@ -330,92 +284,85 @@ input[type="number"] {
 }
 
 /* =========================
-   PRESETS
+   PRESETS LIST
 ========================= */
 
 .preset-list {
   display: flex;
   flex-direction: column;
-
   gap: 10px;
 }
 
 .preset-card {
   width: 100%;
   min-height: 54px;
-
   border: 1px solid #3a3028;
   border-radius: 16px;
-
   background: #120f0d;
   color: #fff7ed;
-
   font-size: 1rem;
   font-weight: 800;
-
   text-align: left;
-
   padding: 0 16px;
-
   cursor: pointer;
 }
 
 /* =========================
-   PRESET DETAIL
+   PRESET DETAIL HEADER
 ========================= */
 
 .detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-bottom: 14px;
 }
 
 .back-button {
   border: 1px solid #3a3028;
   border-radius: 999px;
-
   background: #120f0d;
   color: #c9b9a3;
-
   font-size: 0.85rem;
   font-weight: 800;
-
   padding: 8px 12px;
-
   cursor: pointer;
 }
 
-.size-options {
-  display: flex;
-  gap: 6px;
+/* =========================
+   SIZE OPTIONS
+========================= */
 
+.size-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
   margin-bottom: 14px;
 }
 
 .size-button {
-  flex: 1;
-
   min-height: 36px;
-
   border: 1px solid #3a3028;
   border-radius: 999px;
-
   background: #120f0d;
   color: #c9b9a3;
-
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 850;
-
   cursor: pointer;
 }
 
 .size-button.active {
   background: #f6c177;
   border-color: #f6c177;
-
   color: #1c1712;
+}
+
+/* =========================
+   CUSTOM SIZE INPUT
+========================= */
+
+.custom-size-row {
+  margin-bottom: 10px;
 }
 
 /* =========================
@@ -431,7 +378,6 @@ input[type="number"] {
 ========================= */
 
 @media (max-width: 380px) {
-
   .app {
     padding-inline: 10px;
   }
@@ -442,7 +388,6 @@ input[type="number"] {
 
   .calculator-row {
     grid-template-columns: 1fr 130px;
-
     gap: 10px;
   }
 
@@ -456,8 +401,15 @@ input[type="number"] {
 
   .toggle-option span {
     width: 68px;
-
     font-size: 0.75rem;
+  }
+
+  .size-options {
+    gap: 5px;
+  }
+
+  .size-button {
+    font-size: 0.72rem;
   }
 
   .total-row strong {
