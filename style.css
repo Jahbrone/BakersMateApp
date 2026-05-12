@@ -361,6 +361,65 @@ input[type="number"] {
 }
 
 /* =========================
+   PRESET DETAIL
+========================= */
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 14px;
+}
+
+.back-button {
+  border: 1px solid #3a3028;
+  border-radius: 999px;
+
+  background: #120f0d;
+  color: #c9b9a3;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+
+  padding: 8px 12px;
+
+  cursor: pointer;
+}
+
+.size-options {
+  display: flex;
+  gap: 6px;
+
+  margin-bottom: 14px;
+}
+
+.size-button {
+  flex: 1;
+
+  min-height: 36px;
+
+  border: 1px solid #3a3028;
+  border-radius: 999px;
+
+  background: #120f0d;
+  color: #c9b9a3;
+
+  font-size: 0.8rem;
+  font-weight: 850;
+
+  cursor: pointer;
+}
+
+.size-button.active {
+  background: #f6c177;
+  border-color: #f6c177;
+
+  color: #1c1712;
+}
+
+
+/* =========================
    UTILITIES
 ========================= */
 

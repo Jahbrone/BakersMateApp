@@ -36,6 +36,7 @@ const fields = {
 ========================= */
 
 const outputs = {
+  flourAmount: document.getElementById("flourAmount"),
   waterAmount: document.getElementById("waterAmount"),
   saltAmount: document.getElementById("saltAmount"),
   yeastAmount: document.getElementById("yeastAmount"),
@@ -108,6 +109,7 @@ function calculateDough() {
 
   const total = flour + water + salt + yeast + oil + sugar;
 
+  outputs.flourAmount.textContent = formatGrams(flour);
   outputs.waterAmount.textContent = formatGrams(water);
   outputs.saltAmount.textContent = formatGrams(salt);
   outputs.yeastAmount.textContent = formatGrams(yeast);
@@ -167,6 +169,9 @@ function showView(viewName) {
     presetsView.classList.remove("hidden");
     presetsTab.classList.add("active");
   }
+  if (viewName === "presetDetail") {
+    presetDetailView.classList.remove("hidden");
+  }
 }
 
 /* =========================
@@ -213,3 +218,207 @@ resetButton.addEventListener("click", resetCalculator);
 
 updateToggleUI();
 showView("calculator");
+
+/* =========================
+   PRESET STATE
+========================= */
+
+let activePresetKey = null;
+let activeSizeKey = null;
+
+/* =========================
+   PRESET CALCULATION
+========================= */
+
+function calculatePresetBatch(preset, quantity, sizeKey) {
+  let flour = 0;
+
+  if (preset.type === "sized-unit") {
+    const size = preset.sizes[sizeKey];
+    const totalDough = quantity * size.doughWeight;
+
+    const totalPercentage =
+      100 +
+      preset.hydration +
+      preset.salt +
+      preset.yeast +
+      preset.oil +
+      preset.sugar;
+
+    flour = totalDough / (totalPercentage / 100);
+  }
+
+  const water = flour * (preset.hydration / 100);
+  const salt = flour * (preset.salt / 100);
+  const yeast = flour * (preset.yeast / 100);
+  const oil = flour * (preset.oil / 100);
+  const sugar = flour * (preset.sugar / 100);
+  const total = flour + water + salt + yeast + oil + sugar;
+
+  return {
+    flour,
+    water,
+    salt,
+    yeast,
+    oil,
+    sugar,
+    total,
+  };
+}
+
+/* =========================
+   RENDER PRESET DETAIL
+========================= */
+
+function renderPresetDetail(presetKey) {
+  const preset = presetLibrary[presetKey];
+
+  activePresetKey = presetKey;
+  activeSizeKey = preset.defaultSize;
+
+  presetDetailView.innerHTML = `
+    <section class="card">
+
+      <div class="detail-header">
+        <h2>${preset.name}</h2>
+        <button id="backToPresetsButton" class="back-button">Back</button>
+      </div>
+
+      <div class="size-options">
+        ${Object.entries(preset.sizes)
+          .map(
+            ([key, size]) => `
+            <button
+              class="size-button ${key === activeSizeKey ? "active" : ""}"
+              data-size="${key}"
+            >
+              ${size.label}
+            </button>
+          `,
+          )
+          .join("")}
+      </div>
+
+      <div class="calculator-row">
+        <label for="presetQuantity">Quantity</label>
+        <div class="input-row">
+          <input
+            id="presetQuantity"
+            type="number"
+            inputmode="decimal"
+            min="1"
+            value="${preset.defaultQuantity}"
+          />
+          <span>${preset.unitLabel}</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="card results-card">
+      <h2>Results</h2>
+
+      <div class="result-row">
+        <span>Flour</span>
+        <strong id="presetFlourAmount">0g</strong>
+      </div>
+
+      <div class="result-row">
+        <span>Water</span>
+        <strong id="presetWaterAmount">0g</strong>
+      </div>
+
+      <div class="result-row">
+        <span>Salt</span>
+        <strong id="presetSaltAmount">0g</strong>
+      </div>
+
+      <div class="result-row">
+        <span>Yeast</span>
+        <strong id="presetYeastAmount">0g</strong>
+      </div>
+
+      <div class="total-row">
+        <span>Total dough</span>
+        <strong id="presetTotalAmount">0g</strong>
+      </div>
+    </section>
+  `;
+
+  showView("presetDetail");
+  attachPresetDetailListeners();
+  updatePresetDetailResults();
+}
+
+/* =========================
+   UPDATE PRESET RESULTS
+========================= */
+
+function updatePresetDetailResults() {
+  const preset = presetLibrary[activePresetKey];
+  const quantityInput = document.getElementById("presetQuantity");
+  const quantity = Number(quantityInput.value) || 0;
+
+  const result = calculatePresetBatch(preset, quantity, activeSizeKey);
+
+  document.getElementById("presetFlourAmount").textContent = formatGrams(
+    result.flour,
+  );
+  document.getElementById("presetWaterAmount").textContent = formatGrams(
+    result.water,
+  );
+  document.getElementById("presetSaltAmount").textContent = formatGrams(
+    result.salt,
+  );
+  document.getElementById("presetYeastAmount").textContent = formatGrams(
+    result.yeast,
+  );
+  document.getElementById("presetTotalAmount").textContent = formatGrams(
+    result.total,
+  );
+}
+
+/* =========================
+   PRESET DETAIL LISTENERS
+========================= */
+
+function attachPresetDetailListeners() {
+  const backButton = document.getElementById("backToPresetsButton");
+  const quantityInput = document.getElementById("presetQuantity");
+  const sizeButtons = document.querySelectorAll(".size-button");
+
+  backButton.addEventListener("click", () => {
+    showView("presets");
+  });
+
+  quantityInput.addEventListener("input", updatePresetDetailResults);
+
+  quantityInput.addEventListener("click", () => {
+    quantityInput.select();
+  });
+
+  sizeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeSizeKey = button.dataset.size;
+
+      sizeButtons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      updatePresetDetailResults();
+    });
+  });
+}
+
+/* =========================
+   PRESET CARD LISTENERS
+========================= */
+
+document.querySelectorAll(".preset-card").forEach((button) => {
+  button.addEventListener("click", () => {
+    const presetKey = button.dataset.preset;
+
+    if (presetKey === "pizzaBalls") {
+      renderPresetDetail(presetKey);
+    }
+  });
+});
