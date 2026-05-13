@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#151311" />
-    <link rel="manifest" href="manifest.json" />
-    <title>Bakers Mate</title>
 
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="style.css" />
+
+    <title>Bakers Mate</title>
   </head>
 
   <body>
@@ -19,14 +20,18 @@
 
       <!-- TOP NAV -->
       <nav class="top-nav">
-        <button id="calculatorTab" class="nav-button active">Calculator</button>
-        <button id="presetsTab" class="nav-button">Presets</button>
+        <button id="calculatorTab" class="nav-button active" type="button">
+          Calculator
+        </button>
+
+        <button id="presetsTab" class="nav-button" type="button">
+          Presets
+        </button>
       </nav>
 
       <!-- CALCULATOR VIEW -->
       <section id="calculatorView">
-        <!-- INPUT CARD -->
-        <section class="card input-card">
+        <section class="card calculator-card">
           <!-- TOGGLES -->
           <div class="toggle-row">
             <div class="toggle-group">
@@ -49,7 +54,8 @@
 
           <!-- FLOUR -->
           <div class="calculator-row">
-            <label for="flour">Flour weight</label>
+            <label for="flour">Flour</label>
+
             <div class="input-row">
               <input
                 id="flour"
@@ -60,11 +66,14 @@
               />
               <span>g</span>
             </div>
+
+            <strong id="flourAmount" class="row-result">1000g</strong>
           </div>
 
           <!-- HYDRATION -->
           <div class="calculator-row">
             <label for="hydration">Hydration</label>
+
             <div class="input-row">
               <input
                 id="hydration"
@@ -75,11 +84,14 @@
               />
               <span>%</span>
             </div>
+
+            <strong id="waterAmount" class="row-result">700g</strong>
           </div>
 
           <!-- SALT -->
           <div class="calculator-row">
             <label for="salt">Salt</label>
+
             <div class="input-row">
               <input
                 id="salt"
@@ -87,14 +99,18 @@
                 inputmode="decimal"
                 value="2"
                 min="0"
+                step="0.1"
               />
               <span>%</span>
             </div>
+
+            <strong id="saltAmount" class="row-result">20g</strong>
           </div>
 
           <!-- YEAST -->
           <div id="yeastField" class="calculator-row optional-field">
             <label for="yeast">Yeast</label>
+
             <div class="input-row">
               <input
                 id="yeast"
@@ -106,11 +122,14 @@
               />
               <span>%</span>
             </div>
+
+            <strong id="yeastAmount" class="row-result">3g</strong>
           </div>
 
           <!-- OIL -->
           <div id="oilField" class="calculator-row optional-field hidden">
             <label for="oil">Oil</label>
+
             <div class="input-row">
               <input
                 id="oil"
@@ -118,14 +137,18 @@
                 inputmode="decimal"
                 value="0"
                 min="0"
+                step="0.1"
               />
               <span>%</span>
             </div>
+
+            <strong id="oilAmount" class="row-result">0g</strong>
           </div>
 
           <!-- SUGAR -->
           <div id="sugarField" class="calculator-row optional-field hidden">
             <label for="sugar">Sugar</label>
+
             <div class="input-row">
               <input
                 id="sugar"
@@ -133,57 +156,28 @@
                 inputmode="decimal"
                 value="0"
                 min="0"
+                step="0.1"
               />
               <span>%</span>
             </div>
-          </div>
-        </section>
 
-        <!-- RESULTS CARD -->
-        <section class="card results-card" aria-live="polite">
-          <h2>Results</h2>
-
-          <div class="result-row">
-            <span>Flour</span>
-            <strong id="flourAmount">1000g</strong>
+            <strong id="sugarAmount" class="row-result">0g</strong>
           </div>
 
-          <div class="result-row">
-            <span>Water</span>
-            <strong id="waterAmount">700g</strong>
-          </div>
-
-          <div class="result-row">
-            <span>Salt</span>
-            <strong id="saltAmount">20g</strong>
-          </div>
-
-          <div id="yeastResult" class="result-row">
-            <span>Yeast</span>
-            <strong id="yeastAmount">3g</strong>
-          </div>
-
-          <div id="oilResult" class="result-row hidden">
-            <span>Oil</span>
-            <strong id="oilAmount">0g</strong>
-          </div>
-
-          <div id="sugarResult" class="result-row hidden">
-            <span>Sugar</span>
-            <strong id="sugarAmount">0g</strong>
-          </div>
-
-          <div class="total-row">
+          <!-- TOTAL -->
+          <div class="total-row calculator-total-row">
             <span>Total dough</span>
             <strong id="totalDough">1723g</strong>
           </div>
         </section>
 
         <!-- RESET BUTTON -->
-        <button id="resetButton" class="reset-button">Reset</button>
+        <button id="resetButton" class="reset-button" type="button">
+          Reset
+        </button>
       </section>
 
-      <!-- PRESETS VIEW -->
+      <!-- PRESETS VIEW - UNCHANGED -->
       <section id="presetsView" class="hidden">
         <section class="card">
           <h2>Presets</h2>
@@ -192,32 +186,36 @@
             <button class="preset-card" data-preset="pizzaBalls">
               Pizza Balls
             </button>
-            <button class="preset-card" data-preset="bagels">Bagels</button>
-            <button class="preset-card" data-preset="focaccia">Focaccia</button>
+
+            <button class="preset-card" data-preset="bagels">
+              Bagels
+            </button>
+
+            <button class="preset-card" data-preset="focaccia">
+              Focaccia
+            </button>
           </div>
         </section>
       </section>
 
-      <!-- PRESET DETAIL VIEW -->
+      <!-- PRESET DETAIL VIEW - GENERATED BY JS, LEFT UNCHANGED -->
       <section id="presetDetailView" class="hidden"></section>
     </main>
 
     <script src="presets.js"></script>
     <script src="script.js"></script>
 
+    <!-- Keep this commented out while developing locally -->
+    <!--
     <script>
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/BakersMateApp/service-worker.js", {
-        scope: "/BakersMateApp/",
-
-      });
-
-    });
-
-  }
-
-</script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/BakersMateApp/service-worker.js", {
+            scope: "/BakersMateApp/",
+          });
+        });
+      }
+    </script>
+    -->
   </body>
 </html>

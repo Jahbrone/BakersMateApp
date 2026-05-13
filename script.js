@@ -46,16 +46,6 @@ const outputs = {
 };
 
 /* =========================
-   RESULT ROW ELEMENTS
-========================= */
-
-const resultRows = {
-  yeast: document.getElementById("yeastResult"),
-  oil: document.getElementById("oilResult"),
-  sugar: document.getElementById("sugarResult"),
-};
-
-/* =========================
    VIEW ELEMENTS
 ========================= */
 
@@ -84,11 +74,18 @@ let activeSizeKey = null;
 ========================= */
 
 function getNumber(input) {
-  return Number(input.value) || 0;
+  const value = Number(input.value);
+  return Number.isFinite(value) ? value : 0;
 }
 
 function formatGrams(value) {
-  return `${Math.round(value * 10) / 10}g`;
+  const rounded = Math.round(value * 10) / 10;
+
+  if (Number.isInteger(rounded)) {
+    return `${rounded}g`;
+  }
+
+  return `${rounded.toFixed(1)}g`;
 }
 
 function isEnabled(ingredient) {
@@ -134,7 +131,6 @@ function updateToggleUI() {
     const enabled = isEnabled(ingredient);
 
     fields[ingredient].classList.toggle("hidden", !enabled);
-    resultRows[ingredient].classList.toggle("hidden", !enabled);
   });
 
   calculateDough();
@@ -152,7 +148,11 @@ function resetCalculator() {
   inputs.oil.value = 0;
   inputs.sugar.value = 0;
 
-  calculateDough();
+  toggles.yeast.checked = true;
+  toggles.oil.checked = false;
+  toggles.sugar.checked = false;
+
+  updateToggleUI();
 }
 
 /* =========================
@@ -234,7 +234,7 @@ function renderPresetDetail(presetKey) {
     <section class="card">
       <div class="detail-header">
         <h2>${preset.name}</h2>
-        <button id="backToPresetsButton" class="back-button">Back</button>
+        <button id="backToPresetsButton" class="back-button" type="button">Back</button>
       </div>
 
       ${
@@ -246,6 +246,7 @@ function renderPresetDetail(presetKey) {
                   ([key, size]) => `
                     <button
                       class="size-button ${key === activeSizeKey ? "active" : ""}"
+                      type="button"
                       data-size="${key}"
                     >
                       ${size.label}
@@ -338,7 +339,12 @@ function renderPresetDetail(presetKey) {
 
 function togglePresetRow(id, value) {
   const amount = document.getElementById(id);
+
+  if (!amount) return;
+
   const row = amount.closest(".result-row");
+
+  if (!row) return;
 
   row.classList.toggle("hidden", value <= 0);
 }
