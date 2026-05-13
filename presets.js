@@ -1,6 +1,6 @@
 const presetLibrary = {
   pizzaBalls: {
-    name: "Pizza Balls",
+    name: "Pizza",
     type: "sized-unit",
     unitLabel: "balls",
     customLabel: "Flour per ball",

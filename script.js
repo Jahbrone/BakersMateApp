@@ -256,7 +256,7 @@ function renderPresetDetail(presetKey) {
                 .join("")}
             </div>
 
-            <div id="customSizeRow" class="calculator-row custom-size-row hidden">
+            <div id="customSizeRow" class="preset-row custom-size-row hidden">
               <label for="customFlour">${preset.customLabel}</label>
               <div class="input-row">
                 <input
@@ -273,7 +273,7 @@ function renderPresetDetail(presetKey) {
           : ""
       }
 
-      <div class="calculator-row">
+      <div class="preset-row">
         <label for="presetQuantity">Quantity</label>
         <div class="input-row">
           <input
@@ -283,7 +283,6 @@ function renderPresetDetail(presetKey) {
             min="1"
             value="${preset.defaultQuantity}"
           />
-          <span>${preset.unitLabel}</span>
         </div>
       </div>
     </section>

@@ -60,7 +60,7 @@ body {
 ========================= */
 
 .app-header {
-  margin-bottom: 16px;
+  margin: 20px 0;
 }
 
 h1 {
@@ -82,7 +82,7 @@ h2 {
 .card {
   background: #201c18;
   border: 1px solid #3a3028;
-  border-radius: 20px;
+  /*border-radius: 20px;*/
   padding: 14px;
   margin-bottom: 12px;
 }
@@ -93,7 +93,7 @@ h2 {
 
 .top-nav {
   display: flex;
-  gap: 8px;
+  /*gap: 8px;*/
   margin-bottom: 14px;
 }
 
@@ -101,7 +101,7 @@ h2 {
   flex: 1;
   min-height: 40px;
   border: 1px solid #3a3028;
-  border-radius: 14px;
+  /*border-radius: 14px;*/
   background: #201c18;
   color: #c9b9a3;
   font-size: 0.88rem;
@@ -147,7 +147,7 @@ h2 {
   min-height: 28px;
   padding: 5px 12px;
   border: 1px solid #3a3028;
-  border-radius: 999px;
+  /*border-radius: 999px;*/
   background: transparent;
   color: #b8a68f;
   font-size: 0.72rem;
@@ -198,7 +198,7 @@ h2 {
   min-height: 38px;
   background: #120f0d;
   border: 1px solid #3a3028;
-  border-radius: 12px;
+  /*border-radius: 12px;*/
   padding: 4px 9px;
 }
 
@@ -268,10 +268,10 @@ h2 {
 
 .reset-button {
   width: 100%;
-  min-height: 46px;
+  min-height: 40px;
   margin-top: auto;
   border: 0;
-  border-radius: 15px;
+  /*border-radius: 15px;*/ 
   background: #f6c177;
   color: #1c1712;
   font-size: 0.95rem;
@@ -298,7 +298,7 @@ h2 {
   width: 100%;
   min-height: 54px;
   border: 1px solid #3a3028;
-  border-radius: 16px;
+  /*border-radius: 16px;*/
   background: #120f0d;
   color: #fff7ed;
   font-size: 1rem;
@@ -306,6 +306,20 @@ h2 {
   text-align: left;
   padding: 0 16px;
   cursor: pointer;
+}
+
+.preset-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  align-items: center;
+  gap: 14px;
+
+}
+
+.preset-row label {
+  color: #d8c7b0;
+  font-size: 0.95rem;
+  font-weight: 800;
 }
 
 /* =========================
@@ -321,7 +335,7 @@ h2 {
 
 .back-button {
   border: 1px solid #3a3028;
-  border-radius: 999px;
+  /*border-radius: 999px;*/
   background: #120f0d;
   color: #c9b9a3;
   font-size: 0.85rem;
@@ -337,14 +351,14 @@ h2 {
 .size-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+ /*gap: 6px;*/
   margin-bottom: 14px;
 }
 
 .size-button {
   min-height: 36px;
   border: 1px solid #3a3028;
-  border-radius: 999px;
+  /*border-radius: 999px;*/
   background: #120f0d;
   color: #c9b9a3;
   font-size: 0.78rem;
