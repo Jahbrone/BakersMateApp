@@ -8,8 +8,8 @@ const inputs = {
   yeast: document.getElementById("yeast"),
   oil: document.getElementById("oil"),
   sugar: document.getElementById("sugar"),
+  starter: document.getElementById("starter"),
 };
-
 /* =========================
    TOGGLE ELEMENTS
 ========================= */
@@ -17,8 +17,8 @@ const toggles = {
   yeast: document.getElementById("yeastToggle"),
   oil: document.getElementById("oilToggle"),
   sugar: document.getElementById("sugarToggle"),
+  starter: document.getElementById("starterToggle"),
 };
-
 /* =========================
    OPTIONAL FIELD ELEMENTS
 ========================= */
@@ -26,8 +26,8 @@ const fields = {
   yeast: document.getElementById("yeastField"),
   oil: document.getElementById("oilField"),
   sugar: document.getElementById("sugarField"),
+  starter: document.getElementById("starterField"),
 };
-
 /* =========================
    OUTPUT ELEMENTS
 ========================= */
@@ -38,9 +38,9 @@ const outputs = {
   yeastAmount: document.getElementById("yeastAmount"),
   oilAmount: document.getElementById("oilAmount"),
   sugarAmount: document.getElementById("sugarAmount"),
+  starterAmount: document.getElementById("starterAmount"),
   totalDough: document.getElementById("totalDough"),
 };
-
 /* =========================
    VIEW ELEMENTS
 ========================= */
@@ -49,18 +49,15 @@ const presetsView = document.getElementById("presetsView");
 const presetDetailView = document.getElementById("presetDetailView");
 const calculatorTab = document.getElementById("calculatorTab");
 const presetsTab = document.getElementById("presetsTab");
-
 /* =========================
    RESET BUTTON
 ========================= */
 const resetButton = document.getElementById("resetButton");
-
 /* =========================
    PRESET STATE
 ========================= */
 let activePresetKey = null;
 let activeSizeKey = null;
-
 /* =========================
    HELPER FUNCTIONS
 ========================= */
@@ -68,7 +65,6 @@ function getNumber(input) {
   const value = Number(input.value);
   return Number.isFinite(value) ? value : 0;
 }
-
 function formatGrams(value) {
   const rounded = Math.round(value * 10) / 10;
   if (Number.isInteger(rounded)) {
@@ -76,11 +72,9 @@ function formatGrams(value) {
   }
   return `${rounded.toFixed(1)}g`;
 }
-
 function isEnabled(ingredient) {
   return toggles[ingredient].checked;
 }
-
 /* =========================
    MAIN CALCULATION
 ========================= */
@@ -91,21 +85,23 @@ function calculateDough() {
   const yeastPercent = isEnabled("yeast") ? getNumber(inputs.yeast) : 0;
   const oilPercent = isEnabled("oil") ? getNumber(inputs.oil) : 0;
   const sugarPercent = isEnabled("sugar") ? getNumber(inputs.sugar) : 0;
+  const starterPercent = isEnabled("starter") ? getNumber(inputs.starter) : 0;
   const water = flour * (hydration / 100);
   const salt = flour * (saltPercent / 100);
   const yeast = flour * (yeastPercent / 100);
   const oil = flour * (oilPercent / 100);
   const sugar = flour * (sugarPercent / 100);
-  const total = flour + water + salt + yeast + oil + sugar;
+  const starter = flour * (starterPercent / 100);
+  const total = flour + water + salt + yeast + oil + sugar + starter;
   outputs.flourAmount.textContent = formatGrams(flour);
   outputs.waterAmount.textContent = formatGrams(water);
   outputs.saltAmount.textContent = formatGrams(salt);
   outputs.yeastAmount.textContent = formatGrams(yeast);
   outputs.oilAmount.textContent = formatGrams(oil);
   outputs.sugarAmount.textContent = formatGrams(sugar);
+  outputs.starterAmount.textContent = formatGrams(starter);
   outputs.totalDough.textContent = formatGrams(total);
 }
-
 /* =========================
    TOGGLE UI
 ========================= */
@@ -116,7 +112,6 @@ function updateToggleUI() {
   });
   calculateDough();
 }
-
 /* =========================
    RESET FUNCTION
 ========================= */
@@ -127,12 +122,13 @@ function resetCalculator() {
   inputs.yeast.value = 0.3;
   inputs.oil.value = 0;
   inputs.sugar.value = 0;
+  inputs.starter.value = 20;
   toggles.yeast.checked = true;
   toggles.oil.checked = false;
   toggles.sugar.checked = false;
+  toggles.starter.checked = false;
   updateToggleUI();
 }
-
 /* =========================
    VIEW SWITCHING
 ========================= */
@@ -155,7 +151,6 @@ function showView(viewName) {
     presetsTab.classList.add("active");
   }
 }
-
 /* =========================
    PRESET CALCULATION
 ========================= */
@@ -169,11 +164,11 @@ function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
     const flourPerItem = sizeKey === "custom" ? customFlour : size.flour;
     flour = quantity * flourPerItem;
   }
-  const water = flour * (preset.hydration / 100);
-  const salt = flour * (preset.salt / 100);
-  const yeast = flour * (preset.yeast / 100);
-  const oil = flour * (preset.oil / 100);
-  const sugar = flour * (preset.sugar / 100);
+  const water = flour * ((preset.hydration || 0) / 100);
+  const salt = flour * ((preset.salt || 0) / 100);
+  const yeast = flour * ((preset.yeast || 0) / 100);
+  const oil = flour * ((preset.oil || 0) / 100);
+  const sugar = flour * ((preset.sugar || 0) / 100);
   const yogurt = flour * ((preset.yogurt || 0) / 100);
   const starter = flour * ((preset.starter || 0) / 100);
   const total = flour + water + salt + yeast + oil + sugar + yogurt + starter;
@@ -189,7 +184,6 @@ function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
     total,
   };
 }
-
 /* =========================
    RENDER PRESET DETAIL
 ========================= */
@@ -203,7 +197,6 @@ function renderPresetDetail(presetKey) {
         <h2>${preset.name}</h2>
         <button id="backToPresetsButton" class="back-button" type="button">Back</button>
       </div>
-
       ${
         preset.sizes
           ? `
@@ -222,7 +215,6 @@ function renderPresetDetail(presetKey) {
                 )
                 .join("")}
             </div>
-
             <div id="customSizeRow" class="preset-row custom-size-row hidden">
               <label for="customFlour">${preset.customLabel}</label>
               <div class="input-row">
@@ -239,7 +231,6 @@ function renderPresetDetail(presetKey) {
           `
           : ""
       }
-
       <div class="preset-row">
         <label for="presetQuantity">Quantity</label>
         <div class="input-row">
@@ -253,50 +244,40 @@ function renderPresetDetail(presetKey) {
         </div>
       </div>
     </section>
-
     <section class="card results-card">
       <h2>Results</h2>
-
       <div class="result-row">
         <span>Flour</span>
         <strong id="presetFlourAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Water</span>
         <strong id="presetWaterAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Yoghurt</span>
         <strong id="presetYogurtAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Starter</span>
         <strong id="presetStarterAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Salt</span>
         <strong id="presetSaltAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Yeast</span>
         <strong id="presetYeastAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Oil</span>
         <strong id="presetOilAmount">0g</strong>
       </div>
-
       <div class="result-row">
         <span>Sugar</span>
         <strong id="presetSugarAmount">0g</strong>
       </div>
-
       <div class="total-row">
         <span>Total dough</span>
         <strong id="presetTotalAmount">0g</strong>
@@ -307,7 +288,6 @@ function renderPresetDetail(presetKey) {
   attachPresetDetailListeners();
   updatePresetDetailResults();
 }
-
 /* =========================
    TOGGLE PRESET ROW
 ========================= */
@@ -318,7 +298,6 @@ function togglePresetRow(id, value) {
   if (!row) return;
   row.classList.toggle("hidden", value <= 0);
 }
-
 /* =========================
    UPDATE PRESET RESULTS
 ========================= */
@@ -373,7 +352,6 @@ function updatePresetDetailResults() {
   togglePresetRow("presetYogurtAmount", result.yogurt);
   togglePresetRow("presetStarterAmount", result.starter);
 }
-
 /* =========================
    PRESET DETAIL LISTENERS
 ========================= */
@@ -404,7 +382,6 @@ function attachPresetDetailListeners() {
     });
   });
 }
-
 /* =========================
    LIVE INPUT LISTENERS
 ========================= */
@@ -414,25 +391,21 @@ Object.values(inputs).forEach((input) => {
     input.select();
   });
 });
-
 /* =========================
    TOGGLE LISTENERS
 ========================= */
 Object.values(toggles).forEach((toggle) => {
   toggle.addEventListener("change", updateToggleUI);
 });
-
 /* =========================
    NAV LISTENERS
 ========================= */
 calculatorTab.addEventListener("click", () => {
   showView("calculator");
 });
-
 presetsTab.addEventListener("click", () => {
   showView("presets");
 });
-
 /* =========================
    PRESET CARD LISTENERS
 ========================= */
@@ -442,23 +415,19 @@ document.querySelectorAll(".preset-card").forEach((button) => {
     renderPresetDetail(presetKey);
   });
 });
-
 /* =========================
    RESET BUTTON LISTENER
 ========================= */
 resetButton.addEventListener("click", resetCalculator);
-
 /* =========================
    INITIAL LOAD
 ========================= */
 updateToggleUI();
 showView("calculator");
-
 /* =========================
    PHONE WAKE LOCK
 ========================= */
 let wakeLock = null;
-
 async function enableWakeLock() {
   if (!("wakeLock" in navigator)) return;
   try {
@@ -471,13 +440,9 @@ async function enableWakeLock() {
     console.error(`${err.name}, ${err.message}`);
   }
 }
-
 document.addEventListener("visibilitychange", () => {
   if (wakeLock !== null && document.visibilityState === "visible") {
     enableWakeLock();
   }
 });
-
 enableWakeLock();
-
-

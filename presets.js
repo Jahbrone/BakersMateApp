@@ -18,7 +18,6 @@ const presetLibrary = {
     oil: 0,
     sugar: 0,
   },
-
   bagels: {
     name: "Bagels",
     type: "fixed-unit",
@@ -31,7 +30,6 @@ const presetLibrary = {
     oil: 0,
     sugar: 4,
   },
-
   focaccia: {
     name: "Focaccia",
     type: "sized-batch",
@@ -51,9 +49,7 @@ const presetLibrary = {
     oil: 5,
     sugar: 0,
   },
-
-   naan: {
-
+  naan: {
     name: "Naan",
     type: "fixed-unit",
     unitLabel: "naan",
@@ -65,41 +61,37 @@ const presetLibrary = {
     oil: 0,
     sugar: 0,
     yogurt: 26.5,
-
   },
   chapati: {
-  name: "Chapati",
-  type: "fixed-unit",
-  unitLabel: "chapati",
-  defaultQuantity: 8,
-  flourPerUnit: 20,
-  hydration: 60,
-  salt: 2.5,
-  yeast: 0,
-  oil: 0,
-  sugar: 0,
-},
-
-sourdough: {
-  name: "Sourdough",
-  type: "sized-unit",
-  unitLabel: "loaves",
-  customLabel: "Flour per loaf",
-  defaultQuantity: 1,
-  defaultSize: "medium",
-  sizes: {
-    small: { label: "Small", flour: 300 },
-    medium: { label: "Medium", flour: 500 },
-    large: { label: "Large", flour: 700 },
-    custom: { label: "Custom", flour: 500 },
+    name: "Chapati",
+    type: "fixed-unit",
+    unitLabel: "chapati",
+    defaultQuantity: 8,
+    flourPerUnit: 20,
+    hydration: 60,
+    salt: 2.5,
+    yeast: 0,
+    oil: 0,
+    sugar: 0,
   },
-  hydration: 70,
-  salt: 3,
-  starter: 20,
-  yeast: 0,
-  oil: 0,
-  sugar: 0,
-
-}
-
+  sourdough: {
+    name: "Sourdough",
+    type: "sized-unit",
+    unitLabel: "loaves",
+    customLabel: "Flour per loaf",
+    defaultQuantity: 1,
+    defaultSize: "medium",
+    sizes: {
+      small: { label: "Small", flour: 300 },
+      medium: { label: "Medium", flour: 500 },
+      large: { label: "Large", flour: 700 },
+      custom: { label: "Custom", flour: 500 },
+    },
+    hydration: 70,
+    salt: 3,
+    starter: 20,
+    yeast: 0,
+    oil: 0,
+    sugar: 0,
+  },
 };
