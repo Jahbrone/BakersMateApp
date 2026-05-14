@@ -51,4 +51,21 @@ const presetLibrary = {
     oil: 5,
     sugar: 0,
   },
+
+   naan: {
+
+    name: "Naan",
+    type: "fixed-unit",
+    unitLabel: "naan",
+    defaultQuantity: 4,
+    flourPerUnit: 60,
+    hydration: 53,
+    salt: 2.5,
+    yeast: 1,
+    oil: 0,
+    sugar: 0,
+    yogurt: 26.5,
+
+  }
+
 };

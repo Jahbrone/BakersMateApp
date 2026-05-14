@@ -110,7 +110,6 @@ function calculateDough() {
   const yeast = flour * (yeastPercent / 100);
   const oil = flour * (oilPercent / 100);
   const sugar = flour * (sugarPercent / 100);
-
   const total = flour + water + salt + yeast + oil + sugar;
 
   outputs.flourAmount.textContent = formatGrams(flour);
@@ -206,8 +205,8 @@ function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
   const yeast = flour * (preset.yeast / 100);
   const oil = flour * (preset.oil / 100);
   const sugar = flour * (preset.sugar / 100);
-
-  const total = flour + water + salt + yeast + oil + sugar;
+  const yogurt = flour * ((preset.yogurt || 0) / 100);
+  const total = flour + water + salt + yeast + oil + sugar + yogurt;
 
   return {
     flour,
@@ -216,6 +215,7 @@ function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
     yeast,
     oil,
     sugar,
+    yogurt,
     total,
   };
 }
@@ -251,7 +251,7 @@ function renderPresetDetail(presetKey) {
                     >
                       ${size.label}
                     </button>
-                  `
+                  `,
                 )
                 .join("")}
             </div>
@@ -301,6 +301,11 @@ function renderPresetDetail(presetKey) {
       </div>
 
       <div class="result-row">
+        <span>Yoghurt</span>
+        <strong id="presetYogurtAmount">0g</strong>
+      </div>
+
+      <div class="result-row">
         <span>Salt</span>
         <strong id="presetSaltAmount">0g</strong>
       </div>
@@ -318,6 +323,11 @@ function renderPresetDetail(presetKey) {
       <div class="result-row">
         <span>Sugar</span>
         <strong id="presetSugarAmount">0g</strong>
+      </div>
+
+      <div class="result-row">
+        <span>Yoghurt</span>
+        <strong id="presetYogurtAmount">0g</strong>
       </div>
 
       <div class="total-row">
@@ -360,7 +370,9 @@ function updatePresetDetailResults() {
   const customSizeRow = document.getElementById("customSizeRow");
 
   const quantity = Number(quantityInput.value) || 0;
-  const customFlour = customFlourInput ? Number(customFlourInput.value) || 0 : 0;
+  const customFlour = customFlourInput
+    ? Number(customFlourInput.value) || 0
+    : 0;
 
   if (customSizeRow) {
     customSizeRow.classList.toggle("hidden", activeSizeKey !== "custom");
@@ -370,33 +382,45 @@ function updatePresetDetailResults() {
     preset,
     quantity,
     activeSizeKey,
-    customFlour
+    customFlour,
   );
 
-  document.getElementById("presetFlourAmount").textContent =
-    formatGrams(result.flour);
+  document.getElementById("presetFlourAmount").textContent = formatGrams(
+    result.flour,
+  );
 
-  document.getElementById("presetWaterAmount").textContent =
-    formatGrams(result.water);
+  document.getElementById("presetWaterAmount").textContent = formatGrams(
+    result.water,
+  );
 
-  document.getElementById("presetSaltAmount").textContent =
-    formatGrams(result.salt);
+  document.getElementById("presetSaltAmount").textContent = formatGrams(
+    result.salt,
+  );
 
-  document.getElementById("presetYeastAmount").textContent =
-    formatGrams(result.yeast);
+  document.getElementById("presetYeastAmount").textContent = formatGrams(
+    result.yeast,
+  );
 
-  document.getElementById("presetOilAmount").textContent =
-    formatGrams(result.oil);
+  document.getElementById("presetOilAmount").textContent = formatGrams(
+    result.oil,
+  );
 
-  document.getElementById("presetSugarAmount").textContent =
-    formatGrams(result.sugar);
+  document.getElementById("presetSugarAmount").textContent = formatGrams(
+    result.sugar,
+  );
 
-  document.getElementById("presetTotalAmount").textContent =
-    formatGrams(result.total);
+  document.getElementById("presetYogurtAmount").textContent = formatGrams(
+    result.yogurt,
+  );
+
+  document.getElementById("presetTotalAmount").textContent = formatGrams(
+    result.total,
+  );
 
   togglePresetRow("presetYeastAmount", result.yeast);
   togglePresetRow("presetOilAmount", result.oil);
   togglePresetRow("presetSugarAmount", result.sugar);
+  togglePresetRow("presetYogurtAmount", result.yogurt);
 }
 
 /* =========================
@@ -495,3 +519,31 @@ resetButton.addEventListener("click", resetCalculator);
 
 updateToggleUI();
 showView("calculator");
+
+
+
+
+/* =========================
+   PHONE WAKE LOCK
+========================= */
+let wakeLock = null;
+async function enableWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => {
+      console.log("Wake lock released");
+    });
+
+    console.log("Wake lock active");
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (wakeLock !== null && document.visibilityState === "visible") {
+    enableWakeLock();
+  }
+});
+
+enableWakeLock();
