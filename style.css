@@ -18,7 +18,7 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background: #151311;
+    background: #0c0b09;
   color: #f5efe7;
 }
 
@@ -94,19 +94,30 @@ h2 {
 .top-nav {
   display: flex;
   /*gap: 8px;*/
-  margin-bottom: 14px;
+ /* margin-bottom: 14px;*/
 }
 
 .nav-button {
   flex: 1;
   min-height: 40px;
   border: 1px solid #3a3028;
-  /*border-radius: 14px;*/
+  border-radius: 5px;
   background: #201c18;
   color: #c9b9a3;
-  font-size: 0.88rem;
+  font-size: 1.5rem;
   font-weight: 800;
   cursor: pointer;
+}
+
+.nav-button:first-child {
+  border-radius: 5px 0 0 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.nav-button:last-child {
+border-radius: 0 5px 0 0;
+ border-bottom: 0;
 }
 
 .nav-button.active {
@@ -127,7 +138,6 @@ h2 {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-
 }
 
 .toggle-option {
@@ -140,28 +150,25 @@ h2 {
 }
 
 .toggle-option span {
-
   display: inline-flex;
   justify-content: center;
   align-items: center;
   min-height: 28px;
   padding: 5px 12px;
   border: 1px solid #3a3028;
-  /*border-radius: 999px;*/
-  background: transparent;
+  border-radius: 5px;
+  /* background: transparent; */
   color: #b8a68f;
-  font-size: 0.72rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 400;
   line-height: 1;
   user-select: none;
-
 }
 
 .toggle-option input:checked + span {
   background: #f6c177;
   border-color: #f6c177;
   color: #1c1712;
-
 }
 
 /* =========================
@@ -183,8 +190,8 @@ h2 {
 
 .calculator-row label {
   color: #d8c7b0;
-  font-size: 0.9rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 /* =========================
@@ -213,8 +220,8 @@ h2 {
   outline: 0;
   background: transparent;
   color: #fff7ed;
-  font-size: 1rem;
-  font-weight: 850;
+  font-size: 1.3rem;
+  font-weight: 600;
   text-align: right;
 }
 
@@ -223,7 +230,7 @@ h2 {
   text-align: right;
   color: #c9b9a3;
   font-size: 0.78rem;
-  font-weight: 850;
+  font-weight: 500;
 }
 
 /* =========================
@@ -233,8 +240,8 @@ h2 {
 .row-result {
   text-align: right;
   color: #f6c177;
-  font-size: 0.95rem;
-  font-weight: 900;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 /* =========================
@@ -252,15 +259,15 @@ h2 {
 
 .calculator-total-row span {
   color: #d8c7b0;
-
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .calculator-total-row strong {
   font-size: 1.65rem;
-
   color: #f6c177;
 }
+
 
 /* =========================
    RESET BUTTON
@@ -271,7 +278,7 @@ h2 {
   min-height: 40px;
   margin-top: auto;
   border: 0;
-  /*border-radius: 15px;*/ 
+  /*border-radius: 15px;*/
   background: #f6c177;
   color: #1c1712;
   font-size: 0.95rem;
@@ -313,7 +320,6 @@ h2 {
   grid-template-columns: 1fr 160px;
   align-items: center;
   gap: 14px;
-
 }
 
 .preset-row label {
@@ -351,7 +357,7 @@ h2 {
 .size-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
- /*gap: 6px;*/
+  /*gap: 6px;*/
   margin-bottom: 14px;
 }
 
@@ -364,6 +370,19 @@ h2 {
   font-size: 0.78rem;
   font-weight: 850;
   cursor: pointer;
+}
+
+.size-button:first-child {
+  border-radius: 5px 0 0 5px;
+  border-right: 0;
+}
+
+.size-button:nth-child(2) {
+    border-right: 0;
+}
+.size-button:last-child {
+  border-radius: 0 5px 5px 0;
+  border-left: 0;
 }
 
 .size-button.active {
