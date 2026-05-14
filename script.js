@@ -243,6 +243,48 @@ function renderPresetDetail(presetKey) {
           />
         </div>
       </div>
+      ${preset.editablePercentages ? `<div class="preset-row">
+        <label for="presetHydration">Hydration</label>
+        <div class="input-row">
+          <input
+            id="presetHydration"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.1"
+            value="${preset.hydration}"
+          />
+          <span>%</span>
+        </div>
+      </div>
+      <div class="preset-row">
+        <label for="presetSalt">Salt</label>
+        <div class="input-row">
+          <input
+            id="presetSalt"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.1"
+            value="${preset.salt}"
+          />
+          <span>%</span>
+        </div>
+      </div>
+      <div class="preset-row">
+        <label for="presetStarter">Starter</label>
+        <div class="input-row">
+          <input
+            id="presetStarter"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.1"
+            value="${preset.starter}"
+          />
+          <span>%</span>
+        </div>
+      </div>` : ""}
     </section>
     <section class="card results-card">
       <h2>Results</h2>
@@ -313,6 +355,11 @@ function updatePresetDetailResults() {
   if (customSizeRow) {
     customSizeRow.classList.toggle("hidden", activeSizeKey !== "custom");
   }
+  if (preset.editablePercentages) {
+    preset.hydration = Number(document.getElementById("presetHydration").value) || 0;
+    preset.salt = Number(document.getElementById("presetSalt").value) || 0;
+    preset.starter = Number(document.getElementById("presetStarter").value) || 0;
+  }
   const result = calculatePresetBatch(
     preset,
     quantity,
@@ -371,6 +418,16 @@ function attachPresetDetailListeners() {
     customFlourInput.addEventListener("input", updatePresetDetailResults);
     customFlourInput.addEventListener("click", () => {
       customFlourInput.select();
+    });
+  }
+  if (presetLibrary[activePresetKey].editablePercentages) {
+    ["presetHydration", "presetSalt", "presetStarter"].forEach((id) => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.addEventListener("input", updatePresetDetailResults);
+      input.addEventListener("click", () => {
+        input.select();
+      });
     });
   }
   sizeButtons.forEach((button) => {
