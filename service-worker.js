@@ -1,14 +1,18 @@
 const CACHE_NAME = "bakers-mate-UItest-v0.0.3";
 
 const FILES_TO_CACHE = [
+
   "./",
   "./index.html",
   "./style.css",
-  "./script.js",
-  "./presets.js",
   "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
+
+  "./js/app.js",
+  "./js/ui.js",
+  "./js/calculator.js",
+  "./js/presets.js",
+  "./js/storage.js",
+  "./js/wake-lock.js",
 ];
 
 self.addEventListener("install", (event) => {

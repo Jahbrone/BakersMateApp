@@ -1,6 +1,6 @@
-/* =========================
-   INPUT ELEMENTS
-========================= */
+import { getNumber, formatGrams, calculateDoughValues, calculatePresetBatch } from "./calculator.js";
+import { presetLibrary } from "./presets.js";
+
 const inputs = {
   flour: document.getElementById("flour"),
   hydration: document.getElementById("hydration"),
@@ -10,27 +10,21 @@ const inputs = {
   sugar: document.getElementById("sugar"),
   starter: document.getElementById("starter"),
 };
-/* =========================
-   TOGGLE ELEMENTS
-========================= */
+
 const toggles = {
   yeast: document.getElementById("yeastToggle"),
   oil: document.getElementById("oilToggle"),
   sugar: document.getElementById("sugarToggle"),
   starter: document.getElementById("starterToggle"),
 };
-/* =========================
-   OPTIONAL FIELD ELEMENTS
-========================= */
+
 const fields = {
   yeast: document.getElementById("yeastField"),
   oil: document.getElementById("oilField"),
   sugar: document.getElementById("sugarField"),
   starter: document.getElementById("starterField"),
 };
-/* =========================
-   OUTPUT ELEMENTS
-========================= */
+
 const outputs = {
   flourAmount: document.getElementById("flourAmount"),
   waterAmount: document.getElementById("waterAmount"),
@@ -41,70 +35,45 @@ const outputs = {
   starterAmount: document.getElementById("starterAmount"),
   totalDough: document.getElementById("totalDough"),
 };
-/* =========================
-   VIEW ELEMENTS
-========================= */
+
 const calculatorView = document.getElementById("calculatorView");
 const presetsView = document.getElementById("presetsView");
 const presetDetailView = document.getElementById("presetDetailView");
 const calculatorTab = document.getElementById("calculatorTab");
 const presetsTab = document.getElementById("presetsTab");
-/* =========================
-   RESET BUTTON
-========================= */
 const resetButton = document.getElementById("resetButton");
-/* =========================
-   PRESET STATE
-========================= */
+
 let activePresetKey = null;
 let activeSizeKey = null;
-/* =========================
-   HELPER FUNCTIONS
-========================= */
-function getNumber(input) {
-  const value = Number(input.value);
-  return Number.isFinite(value) ? value : 0;
-}
-function formatGrams(value) {
-  const rounded = Math.round(value * 10) / 10;
-  if (Number.isInteger(rounded)) {
-    return `${rounded}g`;
-  }
-  return `${rounded.toFixed(1)}g`;
-}
+
 function isEnabled(ingredient) {
   return toggles[ingredient].checked;
 }
-/* =========================
-   MAIN CALCULATION
-========================= */
+
 function calculateDough() {
-  const flour = getNumber(inputs.flour);
-  const hydration = getNumber(inputs.hydration);
-  const saltPercent = getNumber(inputs.salt);
-  const yeastPercent = isEnabled("yeast") ? getNumber(inputs.yeast) : 0;
-  const oilPercent = isEnabled("oil") ? getNumber(inputs.oil) : 0;
-  const sugarPercent = isEnabled("sugar") ? getNumber(inputs.sugar) : 0;
-  const starterPercent = isEnabled("starter") ? getNumber(inputs.starter) : 0;
-  const water = flour * (hydration / 100);
-  const salt = flour * (saltPercent / 100);
-  const yeast = flour * (yeastPercent / 100);
-  const oil = flour * (oilPercent / 100);
-  const sugar = flour * (sugarPercent / 100);
-  const starter = flour * (starterPercent / 100);
-  const total = flour + water + salt + yeast + oil + sugar + starter;
-  outputs.flourAmount.textContent = formatGrams(flour);
-  outputs.waterAmount.textContent = formatGrams(water);
-  outputs.saltAmount.textContent = formatGrams(salt);
-  outputs.yeastAmount.textContent = formatGrams(yeast);
-  outputs.oilAmount.textContent = formatGrams(oil);
-  outputs.sugarAmount.textContent = formatGrams(sugar);
-  outputs.starterAmount.textContent = formatGrams(starter);
-  outputs.totalDough.textContent = formatGrams(total);
+  const result = calculateDoughValues({
+    flour: getNumber(inputs.flour),
+    hydration: getNumber(inputs.hydration),
+    salt: getNumber(inputs.salt),
+    yeast: getNumber(inputs.yeast),
+    oil: getNumber(inputs.oil),
+    sugar: getNumber(inputs.sugar),
+    starter: getNumber(inputs.starter),
+    yeastEnabled: isEnabled("yeast"),
+    oilEnabled: isEnabled("oil"),
+    sugarEnabled: isEnabled("sugar"),
+    starterEnabled: isEnabled("starter"),
+  });
+  outputs.flourAmount.textContent = formatGrams(result.flour);
+  outputs.waterAmount.textContent = formatGrams(result.water);
+  outputs.saltAmount.textContent = formatGrams(result.salt);
+  outputs.yeastAmount.textContent = formatGrams(result.yeast);
+  outputs.oilAmount.textContent = formatGrams(result.oil);
+  outputs.sugarAmount.textContent = formatGrams(result.sugar);
+  outputs.starterAmount.textContent = formatGrams(result.starter);
+  outputs.totalDough.textContent = formatGrams(result.total);
 }
-/* =========================
-   TOGGLE UI
-========================= */
+
 function updateToggleUI() {
   Object.keys(toggles).forEach((ingredient) => {
     const enabled = isEnabled(ingredient);
@@ -112,9 +81,7 @@ function updateToggleUI() {
   });
   calculateDough();
 }
-/* =========================
-   RESET FUNCTION
-========================= */
+
 function resetCalculator() {
   inputs.flour.value = 1000;
   inputs.hydration.value = 70;
@@ -129,9 +96,7 @@ function resetCalculator() {
   toggles.starter.checked = false;
   updateToggleUI();
 }
-/* =========================
-   VIEW SWITCHING
-========================= */
+
 function showView(viewName) {
   calculatorView.classList.add("hidden");
   presetsView.classList.add("hidden");
@@ -151,42 +116,7 @@ function showView(viewName) {
     presetsTab.classList.add("active");
   }
 }
-/* =========================
-   PRESET CALCULATION
-========================= */
-function calculatePresetBatch(preset, quantity, sizeKey, customFlour) {
-  let flour = 0;
-  if (preset.type === "fixed-unit") {
-    flour = quantity * preset.flourPerUnit;
-  }
-  if (preset.type === "sized-unit" || preset.type === "sized-batch") {
-    const size = preset.sizes[sizeKey];
-    const flourPerItem = sizeKey === "custom" ? customFlour : size.flour;
-    flour = quantity * flourPerItem;
-  }
-  const water = flour * ((preset.hydration || 0) / 100);
-  const salt = flour * ((preset.salt || 0) / 100);
-  const yeast = flour * ((preset.yeast || 0) / 100);
-  const oil = flour * ((preset.oil || 0) / 100);
-  const sugar = flour * ((preset.sugar || 0) / 100);
-  const yogurt = flour * ((preset.yogurt || 0) / 100);
-  const starter = flour * ((preset.starter || 0) / 100);
-  const total = flour + water + salt + yeast + oil + sugar + yogurt + starter;
-  return {
-    flour,
-    water,
-    salt,
-    yeast,
-    oil,
-    sugar,
-    yogurt,
-    starter,
-    total,
-  };
-}
-/* =========================
-   RENDER PRESET DETAIL
-========================= */
+
 function renderPresetDetail(presetKey) {
   const preset = presetLibrary[presetKey];
   activePresetKey = presetKey;
@@ -330,9 +260,7 @@ function renderPresetDetail(presetKey) {
   attachPresetDetailListeners();
   updatePresetDetailResults();
 }
-/* =========================
-   TOGGLE PRESET ROW
-========================= */
+
 function togglePresetRow(id, value) {
   const amount = document.getElementById(id);
   if (!amount) return;
@@ -340,9 +268,7 @@ function togglePresetRow(id, value) {
   if (!row) return;
   row.classList.toggle("hidden", value <= 0);
 }
-/* =========================
-   UPDATE PRESET RESULTS
-========================= */
+
 function updatePresetDetailResults() {
   const preset = presetLibrary[activePresetKey];
   const quantityInput = document.getElementById("presetQuantity");
@@ -366,42 +292,22 @@ function updatePresetDetailResults() {
     activeSizeKey,
     customFlour,
   );
-  document.getElementById("presetFlourAmount").textContent = formatGrams(
-    result.flour,
-  );
-  document.getElementById("presetWaterAmount").textContent = formatGrams(
-    result.water,
-  );
-  document.getElementById("presetYogurtAmount").textContent = formatGrams(
-    result.yogurt,
-  );
-  document.getElementById("presetStarterAmount").textContent = formatGrams(
-    result.starter,
-  );
-  document.getElementById("presetSaltAmount").textContent = formatGrams(
-    result.salt,
-  );
-  document.getElementById("presetYeastAmount").textContent = formatGrams(
-    result.yeast,
-  );
-  document.getElementById("presetOilAmount").textContent = formatGrams(
-    result.oil,
-  );
-  document.getElementById("presetSugarAmount").textContent = formatGrams(
-    result.sugar,
-  );
-  document.getElementById("presetTotalAmount").textContent = formatGrams(
-    result.total,
-  );
+  document.getElementById("presetFlourAmount").textContent = formatGrams(result.flour);
+  document.getElementById("presetWaterAmount").textContent = formatGrams(result.water);
+  document.getElementById("presetYogurtAmount").textContent = formatGrams(result.yogurt);
+  document.getElementById("presetStarterAmount").textContent = formatGrams(result.starter);
+  document.getElementById("presetSaltAmount").textContent = formatGrams(result.salt);
+  document.getElementById("presetYeastAmount").textContent = formatGrams(result.yeast);
+  document.getElementById("presetOilAmount").textContent = formatGrams(result.oil);
+  document.getElementById("presetSugarAmount").textContent = formatGrams(result.sugar);
+  document.getElementById("presetTotalAmount").textContent = formatGrams(result.total);
   togglePresetRow("presetYeastAmount", result.yeast);
   togglePresetRow("presetOilAmount", result.oil);
   togglePresetRow("presetSugarAmount", result.sugar);
   togglePresetRow("presetYogurtAmount", result.yogurt);
   togglePresetRow("presetStarterAmount", result.starter);
 }
-/* =========================
-   PRESET DETAIL LISTENERS
-========================= */
+
 function attachPresetDetailListeners() {
   const backButton = document.getElementById("backToPresetsButton");
   const quantityInput = document.getElementById("presetQuantity");
@@ -439,67 +345,30 @@ function attachPresetDetailListeners() {
     });
   });
 }
-/* =========================
-   LIVE INPUT LISTENERS
-========================= */
-Object.values(inputs).forEach((input) => {
-  input.addEventListener("input", calculateDough);
-  input.addEventListener("click", () => {
-    input.select();
-  });
-});
-/* =========================
-   TOGGLE LISTENERS
-========================= */
-Object.values(toggles).forEach((toggle) => {
-  toggle.addEventListener("change", updateToggleUI);
-});
-/* =========================
-   NAV LISTENERS
-========================= */
-calculatorTab.addEventListener("click", () => {
-  showView("calculator");
-});
-presetsTab.addEventListener("click", () => {
-  showView("presets");
-});
-/* =========================
-   PRESET CARD LISTENERS
-========================= */
-document.querySelectorAll(".preset-card").forEach((button) => {
-  button.addEventListener("click", () => {
-    const presetKey = button.dataset.preset;
-    renderPresetDetail(presetKey);
-  });
-});
-/* =========================
-   RESET BUTTON LISTENER
-========================= */
-resetButton.addEventListener("click", resetCalculator);
-/* =========================
-   INITIAL LOAD
-========================= */
-updateToggleUI();
-showView("calculator");
-/* =========================
-   PHONE WAKE LOCK
-========================= */
-let wakeLock = null;
-async function enableWakeLock() {
-  if (!("wakeLock" in navigator)) return;
-  try {
-    wakeLock = await navigator.wakeLock.request("screen");
-    wakeLock.addEventListener("release", () => {
-      console.log("Wake lock released");
+
+export function initUI() {
+  Object.values(inputs).forEach((input) => {
+    input.addEventListener("input", calculateDough);
+    input.addEventListener("click", () => {
+      input.select();
     });
-    console.log("Wake lock active");
-  } catch (err) {
-    console.error(`${err.name}, ${err.message}`);
-  }
+  });
+  Object.values(toggles).forEach((toggle) => {
+    toggle.addEventListener("change", updateToggleUI);
+  });
+  calculatorTab.addEventListener("click", () => {
+    showView("calculator");
+  });
+  presetsTab.addEventListener("click", () => {
+    showView("presets");
+  });
+  document.querySelectorAll(".preset-card").forEach((button) => {
+    button.addEventListener("click", () => {
+      const presetKey = button.dataset.preset;
+      renderPresetDetail(presetKey);
+    });
+  });
+  resetButton.addEventListener("click", resetCalculator);
+  updateToggleUI();
+  showView("calculator");
 }
-document.addEventListener("visibilitychange", () => {
-  if (wakeLock !== null && document.visibilityState === "visible") {
-    enableWakeLock();
-  }
-});
-enableWakeLock();

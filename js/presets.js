@@ -1,4 +1,4 @@
-const presetLibrary = {
+export const presetLibrary = {
   pizzaBalls: {
     name: "Pizza",
     type: "sized-unit",
