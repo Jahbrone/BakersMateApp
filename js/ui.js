@@ -1,6 +1,12 @@
+/* =========================
+   IMPORTS
+========================= */
 import { getNumber, formatGrams, calculateDoughValues, calculatePresetBatch } from "./calculator.js";
 import { presetLibrary } from "./presets.js";
-
+import { getSavedRecipes, saveRecipe, deleteRecipe } from "./storage.js";
+/* =========================
+   INPUT ELEMENTS
+========================= */
 const inputs = {
   flour: document.getElementById("flour"),
   hydration: document.getElementById("hydration"),
@@ -10,21 +16,27 @@ const inputs = {
   sugar: document.getElementById("sugar"),
   starter: document.getElementById("starter"),
 };
-
+/* =========================
+   TOGGLE ELEMENTS
+========================= */
 const toggles = {
   yeast: document.getElementById("yeastToggle"),
   oil: document.getElementById("oilToggle"),
   sugar: document.getElementById("sugarToggle"),
   starter: document.getElementById("starterToggle"),
 };
-
+/* =========================
+   OPTIONAL FIELD ELEMENTS
+========================= */
 const fields = {
   yeast: document.getElementById("yeastField"),
   oil: document.getElementById("oilField"),
   sugar: document.getElementById("sugarField"),
   starter: document.getElementById("starterField"),
 };
-
+/* =========================
+   OUTPUT ELEMENTS
+========================= */
 const outputs = {
   flourAmount: document.getElementById("flourAmount"),
   waterAmount: document.getElementById("waterAmount"),
@@ -35,21 +47,34 @@ const outputs = {
   starterAmount: document.getElementById("starterAmount"),
   totalDough: document.getElementById("totalDough"),
 };
-
+/* =========================
+   VIEW ELEMENTS
+========================= */
 const calculatorView = document.getElementById("calculatorView");
 const presetsView = document.getElementById("presetsView");
 const presetDetailView = document.getElementById("presetDetailView");
 const calculatorTab = document.getElementById("calculatorTab");
 const presetsTab = document.getElementById("presetsTab");
+/* =========================
+   BUTTON ELEMENTS
+========================= */
 const resetButton = document.getElementById("resetButton");
-
+const saveRecipeButton = document.getElementById("saveRecipeButton");
+const loadRecipeButton = document.getElementById("loadRecipeButton");
+/* =========================
+   PRESET STATE
+========================= */
 let activePresetKey = null;
 let activeSizeKey = null;
-
+/* =========================
+   HELPER FUNCTIONS
+========================= */
 function isEnabled(ingredient) {
   return toggles[ingredient].checked;
 }
-
+/* =========================
+   MAIN CALCULATION
+========================= */
 function calculateDough() {
   const result = calculateDoughValues({
     flour: getNumber(inputs.flour),
@@ -73,7 +98,9 @@ function calculateDough() {
   outputs.starterAmount.textContent = formatGrams(result.starter);
   outputs.totalDough.textContent = formatGrams(result.total);
 }
-
+/* =========================
+   TOGGLE UI
+========================= */
 function updateToggleUI() {
   Object.keys(toggles).forEach((ingredient) => {
     const enabled = isEnabled(ingredient);
@@ -81,7 +108,9 @@ function updateToggleUI() {
   });
   calculateDough();
 }
-
+/* =========================
+   RESET FUNCTION
+========================= */
 function resetCalculator() {
   inputs.flour.value = 1000;
   inputs.hydration.value = 70;
@@ -96,7 +125,9 @@ function resetCalculator() {
   toggles.starter.checked = false;
   updateToggleUI();
 }
-
+/* =========================
+   VIEW SWITCHING
+========================= */
 function showView(viewName) {
   calculatorView.classList.add("hidden");
   presetsView.classList.add("hidden");
@@ -116,7 +147,85 @@ function showView(viewName) {
     presetsTab.classList.add("active");
   }
 }
+/* =========================
+   RECIPE UI FUNCTIONS
+========================= */
+function getCurrentRecipeState(name) {
+  return {
+    name,
+    flour: getNumber(inputs.flour),
+    hydration: getNumber(inputs.hydration),
+    salt: getNumber(inputs.salt),
+    yeast: getNumber(inputs.yeast),
+    oil: getNumber(inputs.oil),
+    sugar: getNumber(inputs.sugar),
+    starter: getNumber(inputs.starter),
+    toggles: {
+      yeast: toggles.yeast.checked,
+      oil: toggles.oil.checked,
+      sugar: toggles.sugar.checked,
+      starter: toggles.starter.checked,
+    },
+  };
+}
+function applyRecipeState(recipe) {
+  inputs.flour.value = recipe.flour;
+  inputs.hydration.value = recipe.hydration;
+  inputs.salt.value = recipe.salt;
+  inputs.yeast.value = recipe.yeast;
+  inputs.oil.value = recipe.oil;
+  inputs.sugar.value = recipe.sugar;
+  inputs.starter.value = recipe.starter;
+  toggles.yeast.checked = recipe.toggles?.yeast ?? false;
+  toggles.oil.checked = recipe.toggles?.oil ?? false;
+  toggles.sugar.checked = recipe.toggles?.sugar ?? false;
+  toggles.starter.checked = recipe.toggles?.starter ?? false;
+  updateToggleUI();
+  showView("calculator");
+}
+function handleSaveRecipe() {
+  const name = prompt("Recipe name?");
+  if (!name || !name.trim()) return;
+  saveRecipe(getCurrentRecipeState(name.trim()));
+}
+function handleLoadRecipe() {
+  const recipes = getSavedRecipes();
+  if (recipes.length === 0) {
+    alert("No saved recipes yet.");
+    return;
+  }
 
+  const recipeList = recipes
+    .map((recipe, index) => `${index + 1}. ${recipe.name}`)
+    .join("\n");
+
+  const choice = prompt(
+    `Load recipe:\n\n${recipeList}\n\nEnter number to load.\nEnter d + number to delete.\nExample: d2`,
+  );
+
+  if (!choice || !choice.trim()) return;
+  const cleanedChoice = choice.trim().toLowerCase();
+  if (cleanedChoice.startsWith("d")) {
+    const deleteIndex = Number(cleanedChoice.slice(1)) - 1;
+    const recipeToDelete = recipes[deleteIndex];
+    if (!recipeToDelete) return;
+    const confirmed = confirm(
+      `Delete "${recipeToDelete.name}"?`,
+    );
+
+    if (!confirmed) return;
+    deleteRecipe(recipeToDelete.id);
+    return;
+  }
+
+  const recipeIndex = Number(cleanedChoice) - 1;
+  const selectedRecipe = recipes[recipeIndex];
+  if (!selectedRecipe) return;
+  applyRecipeState(selectedRecipe);
+}
+/* =========================
+   RENDER PRESET DETAIL
+========================= */
 function renderPresetDetail(presetKey) {
   const preset = presetLibrary[presetKey];
   activePresetKey = presetKey;
@@ -260,7 +369,9 @@ function renderPresetDetail(presetKey) {
   attachPresetDetailListeners();
   updatePresetDetailResults();
 }
-
+/* =========================
+   TOGGLE PRESET ROW
+========================= */
 function togglePresetRow(id, value) {
   const amount = document.getElementById(id);
   if (!amount) return;
@@ -268,7 +379,9 @@ function togglePresetRow(id, value) {
   if (!row) return;
   row.classList.toggle("hidden", value <= 0);
 }
-
+/* =========================
+   UPDATE PRESET RESULTS
+========================= */
 function updatePresetDetailResults() {
   const preset = presetLibrary[activePresetKey];
   const quantityInput = document.getElementById("presetQuantity");
@@ -307,7 +420,9 @@ function updatePresetDetailResults() {
   togglePresetRow("presetYogurtAmount", result.yogurt);
   togglePresetRow("presetStarterAmount", result.starter);
 }
-
+/* =========================
+   PRESET DETAIL LISTENERS
+========================= */
 function attachPresetDetailListeners() {
   const backButton = document.getElementById("backToPresetsButton");
   const quantityInput = document.getElementById("presetQuantity");
@@ -345,7 +460,9 @@ function attachPresetDetailListeners() {
     });
   });
 }
-
+/* =========================
+   INITIALISE UI
+========================= */
 export function initUI() {
   Object.values(inputs).forEach((input) => {
     input.addEventListener("input", calculateDough);
@@ -369,6 +486,12 @@ export function initUI() {
     });
   });
   resetButton.addEventListener("click", resetCalculator);
+  if (saveRecipeButton) {
+    saveRecipeButton.addEventListener("click", handleSaveRecipe);
+  }
+  if (loadRecipeButton) {
+    loadRecipeButton.addEventListener("click", handleLoadRecipe);
+  }
   updateToggleUI();
   showView("calculator");
 }
