@@ -19,6 +19,7 @@
         </div>
       </header>
 
+      <!-- SAVED RECIPES PANEL -->
       <section id="savedRecipesPanel" class="saved-recipes-panel hidden">
         <div class="saved-recipes-card">
           <div class="saved-recipes-header">
@@ -26,6 +27,34 @@
             <button id="closeSavedRecipesButton" type="button">Close</button>
           </div>
           <div id="savedRecipesList" class="saved-recipes-list"></div>
+        </div>
+      </section>
+
+      <section id="saveRecipePanel" class="save-recipe-panel hidden">
+        <div class="save-recipe-card">
+          <div class="save-recipe-header">
+            <h2>Save recipe</h2>
+            <button id="closeSaveRecipeButton" type="button">Close</button>
+          </div>
+
+          <div class="save-recipe-form">
+            <label for="recipeNameInput">Recipe name</label>
+            <input id="recipeNameInput" type="text" placeholder="Pizza dough" />
+            <button id="confirmSaveRecipeButton" type="button">
+              Save recipe
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="deleteRecipePanel" class="delete-recipe-panel hidden">
+        <div class="delete-recipe-card">
+          <h2>Delete recipe?</h2>
+          <p id="deleteRecipeMessage"></p>
+          <div class="delete-recipe-actions">
+            <button id="cancelDeleteRecipeButton" type="button">Cancel</button>
+            <button id="confirmDeleteRecipeButton" type="button">Delete</button>
+          </div>
         </div>
       </section>
 

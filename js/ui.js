@@ -66,11 +66,44 @@ const presetsTab = document.getElementById("presetsTab");
 const resetButton = document.getElementById("resetButton");
 const saveRecipeButton = document.getElementById("saveRecipeButton");
 const loadRecipeButton = document.getElementById("loadRecipeButton");
+/* =========================
+   SAVED RECIPES PANEL ELEMENTS
+========================= */
 const savedRecipesPanel = document.getElementById("savedRecipesPanel");
 const savedRecipesList = document.getElementById("savedRecipesList");
+const savedRecipesCard = document.querySelector(".saved-recipes-card");
 const closeSavedRecipesButton = document.getElementById(
   "closeSavedRecipesButton",
 );
+/* =========================
+   SAVE RECIPE PANEL ELEMENTS
+========================= */
+const saveRecipePanel = document.getElementById("saveRecipePanel");
+const saveRecipeCard = document.querySelector(".save-recipe-card");
+const closeSaveRecipeButton = document.getElementById("closeSaveRecipeButton");
+const confirmSaveRecipeButton = document.getElementById(
+  "confirmSaveRecipeButton",
+);
+
+/* =========================
+
+   DELETE RECIPE PANEL ELEMENTS
+
+========================= */
+
+const deleteRecipePanel = document.getElementById("deleteRecipePanel");
+const deleteRecipeMessage = document.getElementById("deleteRecipeMessage");
+const cancelDeleteRecipeButton = document.getElementById(
+  "cancelDeleteRecipeButton",
+);
+const confirmDeleteRecipeButton = document.getElementById(
+  "confirmDeleteRecipeButton",
+);
+const deleteRecipeCard = document.querySelector(".delete-recipe-card");
+let recipePendingDelete = null;
+
+const recipeNameInput = document.getElementById("recipeNameInput");
+
 /* =========================
    PRESET STATE
 ========================= */
@@ -193,12 +226,23 @@ function applyRecipeState(recipe) {
   updateToggleUI();
   showView("calculator");
 }
-function handleSaveRecipe() {
-  const name = prompt("Recipe name?");
-  if (!name || !name.trim()) return;
-  saveRecipe(getCurrentRecipeState(name.trim()));
+function openSaveRecipePanel() {
+  recipeNameInput.value = "";
+  saveRecipePanel.classList.remove("hidden");
+  recipeNameInput.focus();
 }
-
+function closeSaveRecipePanel() {
+  saveRecipePanel.classList.add("hidden");
+}
+function confirmSaveRecipe() {
+  const name = recipeNameInput.value.trim();
+  if (!name) return;
+  saveRecipe(getCurrentRecipeState(name));
+  closeSaveRecipePanel();
+}
+function handleSaveRecipe() {
+  openSaveRecipePanel();
+}
 function renderSavedRecipesPanel() {
   const recipes = getSavedRecipes();
   savedRecipesList.innerHTML = "";
@@ -221,16 +265,16 @@ function renderSavedRecipesPanel() {
       applyRecipeState(recipe);
       savedRecipesPanel.classList.add("hidden");
     });
+
     row.querySelector(".saved-recipe-delete").addEventListener("click", () => {
-      const confirmed = confirm(`Delete "${recipe.name}"?`);
-      if (!confirmed) return;
-      deleteRecipe(recipe.id);
-      renderSavedRecipesPanel();
+      recipePendingDelete = recipe;
+      deleteRecipeMessage.textContent = `Delete "${recipe.name}"?`;
+      deleteRecipePanel.classList.remove("hidden");
     });
+
     savedRecipesList.appendChild(row);
   });
 }
-
 function handleLoadRecipe() {
   renderSavedRecipesPanel();
   savedRecipesPanel.classList.remove("hidden");
@@ -521,26 +565,42 @@ export function initUI() {
       renderPresetDetail(presetKey);
     });
   });
-
   if (closeSavedRecipesButton) {
     closeSavedRecipesButton.addEventListener("click", () => {
       savedRecipesPanel.classList.add("hidden");
     });
   }
-
   if (savedRecipesPanel) {
     savedRecipesPanel.addEventListener("click", () => {
       savedRecipesPanel.classList.add("hidden");
     });
   }
-
-  const savedRecipesCard = document.querySelector(".saved-recipes-card");
   if (savedRecipesCard) {
     savedRecipesCard.addEventListener("click", (event) => {
       event.stopPropagation();
     });
   }
-
+  if (closeSaveRecipeButton) {
+    closeSaveRecipeButton.addEventListener("click", closeSaveRecipePanel);
+  }
+  if (confirmSaveRecipeButton) {
+    confirmSaveRecipeButton.addEventListener("click", confirmSaveRecipe);
+  }
+  if (recipeNameInput) {
+    recipeNameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        confirmSaveRecipe();
+      }
+    });
+  }
+  if (saveRecipePanel) {
+    saveRecipePanel.addEventListener("click", closeSaveRecipePanel);
+  }
+  if (saveRecipeCard) {
+    saveRecipeCard.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+  }
   resetButton.addEventListener("click", resetCalculator);
   if (saveRecipeButton) {
     saveRecipeButton.addEventListener("click", handleSaveRecipe);
@@ -548,6 +608,39 @@ export function initUI() {
   if (loadRecipeButton) {
     loadRecipeButton.addEventListener("click", handleLoadRecipe);
   }
+/* =========================
+   DELETE RECIPE PANEL LISTENERS
+========================= */
+if (cancelDeleteRecipeButton) {
+  cancelDeleteRecipeButton.addEventListener("click", () => {
+    recipePendingDelete = null;
+    deleteRecipePanel.classList.add("hidden");
+  });
+}
+if (confirmDeleteRecipeButton) {
+  confirmDeleteRecipeButton.addEventListener("click", () => {
+    if (!recipePendingDelete) return;
+    deleteRecipe(recipePendingDelete.id);
+    recipePendingDelete = null;
+    deleteRecipePanel.classList.add("hidden");
+    renderSavedRecipesPanel();
+  });
+}
+if (deleteRecipePanel) {
+  deleteRecipePanel.addEventListener("click", () => {
+    recipePendingDelete = null;
+    deleteRecipePanel.classList.add("hidden");
+  });
+}
+if (deleteRecipeCard) {
+  deleteRecipeCard.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+}
+
+
+
+
   updateToggleUI();
   showView("calculator");
 }
