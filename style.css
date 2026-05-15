@@ -92,6 +92,76 @@ h2 {
 }
 
 /* =========================
+   SAVED RECIPES PANEL
+========================= */
+.saved-recipes-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 96px 16px 16px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.saved-recipes-panel.hidden {
+  display: none;
+}
+
+.saved-recipes-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px;
+  border: 1px solid #332a20;
+  background: #1f1a15;
+}
+
+.saved-recipes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.saved-recipes-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.saved-recipes-list {
+  display: grid;
+  gap: 8px;
+}
+
+.saved-recipe-row {
+  display: flex;
+  gap: 8px;
+}
+
+.saved-recipe-load {
+  flex: 1;
+  text-align: left;
+}
+
+.saved-recipe-delete {
+  width: 42px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.saved-recipe-load {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.empty-state {
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* =========================
    CARD STYLES
 ========================= */
 

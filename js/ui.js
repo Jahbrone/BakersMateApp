@@ -1,7 +1,12 @@
 /* =========================
    IMPORTS
 ========================= */
-import { getNumber, formatGrams, calculateDoughValues, calculatePresetBatch } from "./calculator.js";
+import {
+  getNumber,
+  formatGrams,
+  calculateDoughValues,
+  calculatePresetBatch,
+} from "./calculator.js";
 import { presetLibrary } from "./presets.js";
 import { getSavedRecipes, saveRecipe, deleteRecipe } from "./storage.js";
 /* =========================
@@ -61,6 +66,11 @@ const presetsTab = document.getElementById("presetsTab");
 const resetButton = document.getElementById("resetButton");
 const saveRecipeButton = document.getElementById("saveRecipeButton");
 const loadRecipeButton = document.getElementById("loadRecipeButton");
+const savedRecipesPanel = document.getElementById("savedRecipesPanel");
+const savedRecipesList = document.getElementById("savedRecipesList");
+const closeSavedRecipesButton = document.getElementById(
+  "closeSavedRecipesButton",
+);
 /* =========================
    PRESET STATE
 ========================= */
@@ -188,40 +198,42 @@ function handleSaveRecipe() {
   if (!name || !name.trim()) return;
   saveRecipe(getCurrentRecipeState(name.trim()));
 }
-function handleLoadRecipe() {
+
+function renderSavedRecipesPanel() {
   const recipes = getSavedRecipes();
+  savedRecipesList.innerHTML = "";
   if (recipes.length === 0) {
-    alert("No saved recipes yet.");
+    savedRecipesList.innerHTML = `<p class="empty-state">No saved recipes yet.</p>`;
     return;
   }
+  recipes.forEach((recipe) => {
+    const row = document.createElement("div");
+    row.className = "saved-recipe-row";
+    row.innerHTML = `
+      <button class="saved-recipe-load" type="button">
+        ${recipe.name}
+      </button>
+      <button class="saved-recipe-delete" type="button">
+        🗑
+      </button>
+    `;
+    row.querySelector(".saved-recipe-load").addEventListener("click", () => {
+      applyRecipeState(recipe);
+      savedRecipesPanel.classList.add("hidden");
+    });
+    row.querySelector(".saved-recipe-delete").addEventListener("click", () => {
+      const confirmed = confirm(`Delete "${recipe.name}"?`);
+      if (!confirmed) return;
+      deleteRecipe(recipe.id);
+      renderSavedRecipesPanel();
+    });
+    savedRecipesList.appendChild(row);
+  });
+}
 
-  const recipeList = recipes
-    .map((recipe, index) => `${index + 1}. ${recipe.name}`)
-    .join("\n");
-
-  const choice = prompt(
-    `Load recipe:\n\n${recipeList}\n\nEnter number to load.\nEnter d + number to delete.\nExample: d2`,
-  );
-
-  if (!choice || !choice.trim()) return;
-  const cleanedChoice = choice.trim().toLowerCase();
-  if (cleanedChoice.startsWith("d")) {
-    const deleteIndex = Number(cleanedChoice.slice(1)) - 1;
-    const recipeToDelete = recipes[deleteIndex];
-    if (!recipeToDelete) return;
-    const confirmed = confirm(
-      `Delete "${recipeToDelete.name}"?`,
-    );
-
-    if (!confirmed) return;
-    deleteRecipe(recipeToDelete.id);
-    return;
-  }
-
-  const recipeIndex = Number(cleanedChoice) - 1;
-  const selectedRecipe = recipes[recipeIndex];
-  if (!selectedRecipe) return;
-  applyRecipeState(selectedRecipe);
+function handleLoadRecipe() {
+  renderSavedRecipesPanel();
+  savedRecipesPanel.classList.remove("hidden");
 }
 /* =========================
    RENDER PRESET DETAIL
@@ -282,7 +294,9 @@ function renderPresetDetail(presetKey) {
           />
         </div>
       </div>
-      ${preset.editablePercentages ? `<div class="preset-row">
+      ${
+        preset.editablePercentages
+          ? `<div class="preset-row">
         <label for="presetHydration">Hydration</label>
         <div class="input-row">
           <input
@@ -323,7 +337,9 @@ function renderPresetDetail(presetKey) {
           />
           <span>%</span>
         </div>
-      </div>` : ""}
+      </div>`
+          : ""
+      }
     </section>
     <section class="card results-card">
       <h2>Results</h2>
@@ -395,9 +411,11 @@ function updatePresetDetailResults() {
     customSizeRow.classList.toggle("hidden", activeSizeKey !== "custom");
   }
   if (preset.editablePercentages) {
-    preset.hydration = Number(document.getElementById("presetHydration").value) || 0;
+    preset.hydration =
+      Number(document.getElementById("presetHydration").value) || 0;
     preset.salt = Number(document.getElementById("presetSalt").value) || 0;
-    preset.starter = Number(document.getElementById("presetStarter").value) || 0;
+    preset.starter =
+      Number(document.getElementById("presetStarter").value) || 0;
   }
   const result = calculatePresetBatch(
     preset,
@@ -405,15 +423,33 @@ function updatePresetDetailResults() {
     activeSizeKey,
     customFlour,
   );
-  document.getElementById("presetFlourAmount").textContent = formatGrams(result.flour);
-  document.getElementById("presetWaterAmount").textContent = formatGrams(result.water);
-  document.getElementById("presetYogurtAmount").textContent = formatGrams(result.yogurt);
-  document.getElementById("presetStarterAmount").textContent = formatGrams(result.starter);
-  document.getElementById("presetSaltAmount").textContent = formatGrams(result.salt);
-  document.getElementById("presetYeastAmount").textContent = formatGrams(result.yeast);
-  document.getElementById("presetOilAmount").textContent = formatGrams(result.oil);
-  document.getElementById("presetSugarAmount").textContent = formatGrams(result.sugar);
-  document.getElementById("presetTotalAmount").textContent = formatGrams(result.total);
+  document.getElementById("presetFlourAmount").textContent = formatGrams(
+    result.flour,
+  );
+  document.getElementById("presetWaterAmount").textContent = formatGrams(
+    result.water,
+  );
+  document.getElementById("presetYogurtAmount").textContent = formatGrams(
+    result.yogurt,
+  );
+  document.getElementById("presetStarterAmount").textContent = formatGrams(
+    result.starter,
+  );
+  document.getElementById("presetSaltAmount").textContent = formatGrams(
+    result.salt,
+  );
+  document.getElementById("presetYeastAmount").textContent = formatGrams(
+    result.yeast,
+  );
+  document.getElementById("presetOilAmount").textContent = formatGrams(
+    result.oil,
+  );
+  document.getElementById("presetSugarAmount").textContent = formatGrams(
+    result.sugar,
+  );
+  document.getElementById("presetTotalAmount").textContent = formatGrams(
+    result.total,
+  );
   togglePresetRow("presetYeastAmount", result.yeast);
   togglePresetRow("presetOilAmount", result.oil);
   togglePresetRow("presetSugarAmount", result.sugar);
@@ -485,6 +521,26 @@ export function initUI() {
       renderPresetDetail(presetKey);
     });
   });
+
+  if (closeSavedRecipesButton) {
+    closeSavedRecipesButton.addEventListener("click", () => {
+      savedRecipesPanel.classList.add("hidden");
+    });
+  }
+
+  if (savedRecipesPanel) {
+    savedRecipesPanel.addEventListener("click", () => {
+      savedRecipesPanel.classList.add("hidden");
+    });
+  }
+
+  const savedRecipesCard = document.querySelector(".saved-recipes-card");
+  if (savedRecipesCard) {
+    savedRecipesCard.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+  }
+
   resetButton.addEventListener("click", resetCalculator);
   if (saveRecipeButton) {
     saveRecipeButton.addEventListener("click", handleSaveRecipe);
